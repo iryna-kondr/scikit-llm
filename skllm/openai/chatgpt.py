@@ -6,14 +6,17 @@ def construct_message(role, content):
         raise ValueError("Invalid role")
     return {"role": role, "content": content}
 
-def get_chat_completion(messages, key, org, model="gpt-3.5-turbo"):
+def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries = 3):
     openai.api_key = key
     openai.organization = org
-    completion = openai.ChatCompletion.create(
-        model=model, temperature=0., messages=messages
-    )
-
-    return completion
+    for _ in range(max_retries):
+        try:
+            completion = openai.ChatCompletion.create(
+                model=model, temperature=0., messages=messages
+            )
+            return completion
+        except Exception:
+            continue
 
 def extract_json_key(json_, key):
     try: 

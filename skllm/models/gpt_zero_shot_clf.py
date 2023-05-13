@@ -7,7 +7,12 @@ from tqdm import tqdm
 from abc import ABC, abstractmethod
 from sklearn.base import BaseEstimator, ClassifierMixin
 from skllm.openai.prompts import get_zero_shot_prompt_slc, get_zero_shot_prompt_mlc
-from skllm.openai.chatgpt import construct_message, get_chat_completion, extract_json_key
+from skllm.openai.chatgpt import (
+    construct_message,
+    get_chat_completion,
+    extract_json_key,
+)
+from skllm.config import SKLLMConfig as _Config
 
 
 class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin):
@@ -23,20 +28,37 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin):
 
     def fit(
         self,
-        X: Union[np.ndarray, pd.Series, List[str]],
+        X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
+        if isinstance(X, np.ndarray):
+            X = np.squeeze(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
-    def predict(self, X):
+    def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
+        if isinstance(X, np.ndarray):
+            X = np.squeeze(X)
         predictions = []
         for i in tqdm(range(len(X))):
             predictions.append(self._predict_single(X[i]))
         return predictions
 
-    def _get_openai_keys(self):
-        return self.openai_key, self.openai_org
+    def _get_openai_key(self):
+        key = self.openai_key
+        if key is None:
+            key = _Config.get_openai_key()
+        if key is None:
+            raise RuntimeError("OpenAI key was not found")
+        return key
+
+    def _get_openai_org(self):
+        key = self.openai_org
+        if key is None:
+            key = _Config.get_openai_org()
+        if key is None:
+            raise RuntimeError("OpenAI organization was not found")
+        return key
 
     @abstractmethod
     def _extract_labels(self, y: Any) -> List[str]:
@@ -56,13 +78,13 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin):
 
         return classes, probs
 
-    def _get_completion(self, x):
+    def _get_chat_completion(self, x):
         prompt = self._get_prompt(x)
         msgs = []
         msgs.append(construct_message("system", "You are a text classification model."))
         msgs.append(construct_message("user", prompt))
         completion = get_chat_completion(
-            msgs, self.openai_key, self.openai_org, self.openai_model
+            msgs, self._get_openai_key(), self._get_openai_org(), self.openai_model
         )
         return completion
 
@@ -87,7 +109,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return get_zero_shot_prompt_slc(x, self.classes_)
 
     def _predict_single(self, x):
-        completion = self._get_completion(x)
+        completion = self._get_chat_completion(x)
         try:
             label = str(
                 extract_json_key(completion.choices[0].message["content"], "label")
@@ -98,6 +120,15 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         if label not in self.classes_:
             label = random.choices(self.classes_, self.probabilities_)[0]
         return label
+
+    def fit(
+        self,
+        X: Optional[Union[np.ndarray, pd.Series, List[str]]],
+        y: Union[np.ndarray, pd.Series, List[str]],
+    ):
+        if isinstance(y, np.ndarray):
+            y = np.squeeze(y)
+        return super().fit(X, y)
 
 
 class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
@@ -125,7 +156,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return get_zero_shot_prompt_mlc(x, self.classes_, self.max_labels)
 
     def _predict_single(self, x):
-        completion = self._get_completion(x)
+        completion = self._get_chat_completion(x)
         try:
             labels = extract_json_key(completion.choices[0].message["content"], "label")
             if not isinstance(labels, list):
@@ -140,3 +171,10 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         elif len(labels) < 1:
             labels = [random.choices(self.classes_, self.probabilities_)[0]]
         return labels
+
+    def fit(
+        self,
+        X: Optional[Union[np.ndarray, pd.Series, List[str]]],
+        y: List[List[str]],
+    ):
+        return super().fit(X, y)
