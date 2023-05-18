@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/iryna-kondr/scikit-llm/blob/main/logo.png?raw=true" height="200"/>
+  <img src="https://github.com/iryna-kondr/scikit-llm/blob/main/logo.png?raw=true" max-height="200"/>
 </p>
 
 # Scikit-LLM: Sklearn Meets Large Language Models
@@ -11,6 +11,16 @@ Seamlessly integrate powerful language models like ChatGPT into scikit-learn for
 ```bash 
 pip install scikit-llm
 ```
+
+## Support us 🤝
+
+You can support the project in the following ways:
+
+- ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
+- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section
+- 🔗 Post about Scikit-LLM on LinkedIn or other platforms
+- 🪶 Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
+
 
 ## Documentation 📚
 
@@ -81,7 +91,7 @@ labels = clf.predict(X)
 
 Similarly to the `ZeroShotGPTClassifier` it is sufficient if only candidate labels are provided. However, this time the classifier expects `y` of a type `List[List[str]]`.
 
-```
+```python
 from skllm import MultiLabelZeroShotGPTClassifier
 from skllm.datasets import get_multilabel_classification_dataset
 
