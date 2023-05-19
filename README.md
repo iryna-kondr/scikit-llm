@@ -72,6 +72,9 @@ labels = clf.predict(X)
 
 ```
 
+**Note:** unlike in a typical supervised setting, the performance of a zero-shot classifier greatly depends on how the label itself is structured. It has to be expressed in natural language, be descriptive and self-explanatory. For example, in the previous semantic classification task, it could be beneficial to transform a label from `"<semantics>"` to `"the semantics of the provided text is <semantics>"`. 
+
+
 ### Multi-Label Zero-Shot Text Classification
 
 With a class `MultiLabelZeroShotGPTClassifier` it is possible to perform the classification in multi-label setting, which means that each sample might be assigned to one or several distinct classes.
@@ -113,6 +116,34 @@ clf.fit(None, [candidate_labels])
 labels = clf.predict(X)
 ```
 
+### Text Vectorization
+
+As an alternative to using GPT as a classifier, it can be used solely for data preprocessing. `GPTVectorizer` allows to embed a chunk of text of arbitrary length to a fixed-dimensional vector, that can be used with virtually any classification or regression model.
+
+Example 1: Embedding the text
+```python
+from skllm.preprocessing import GPTVectorizer
+
+model = GPTVectorizer()
+vectors = model.fit_transform(X)
+```
+
+Example 2: Combining the Vectorizer with the XGBoost Classifier in a Sklearn Pipeline
+```python
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import LabelEncoder
+from xgboost import XGBClassifier
+
+le = LabelEncoder()
+y_train_encoded = le.fit_transform(y_train)
+y_test_encoded = le.transform(y_test)
+
+steps = [('GPT', GPTVectorizer()), ('Clf', XGBClassifier())]
+clf = Pipeline(steps)
+clf.fit(X_train, y_train_encoded)
+yh = clf.predict(X_test)
+```
+
 ## Roadmap 🧭
 
 - [x] Zero-Shot Classification with OpenAI GPT 3/4
@@ -121,6 +152,6 @@ labels = clf.predict(X)
     - [x] ChatGPT models
     - [ ] InstructGPT models
 - [ ] Few shot classifier
-- [ ] GPT Vectorizer
+- [x] GPT Vectorizer
 - [ ] GPT Fine-tuning (optional)
 - [ ] Integration of other LLMs

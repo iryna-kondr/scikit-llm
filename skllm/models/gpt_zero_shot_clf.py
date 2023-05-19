@@ -13,52 +13,37 @@ from skllm.openai.chatgpt import (
     extract_json_key,
 )
 from skllm.config import SKLLMConfig as _Config
+from skllm.utils import to_numpy as _to_numpy
+from skllm.openai.mixin import OpenAIMixin as _OAIMixin
 
-
-class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin):
+class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin):
     def __init__(
         self,
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
     ):
-        self.openai_key = openai_key
-        self.openai_org = openai_org
+        self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
+
+    def _to_np(self, X):
+        return _to_numpy(X)
 
     def fit(
         self,
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
-        if isinstance(X, np.ndarray):
-            X = np.squeeze(X)
+        X = self._to_np(X)        
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
-        if isinstance(X, np.ndarray):
-            X = np.squeeze(X)
+        X = self._to_np(X)
         predictions = []
         for i in tqdm(range(len(X))):
             predictions.append(self._predict_single(X[i]))
         return predictions
-
-    def _get_openai_key(self):
-        key = self.openai_key
-        if key is None:
-            key = _Config.get_openai_key()
-        if key is None:
-            raise RuntimeError("OpenAI key was not found")
-        return key
-
-    def _get_openai_org(self):
-        key = self.openai_org
-        if key is None:
-            key = _Config.get_openai_org()
-        if key is None:
-            raise RuntimeError("OpenAI organization was not found")
-        return key
 
     @abstractmethod
     def _extract_labels(self, y: Any) -> List[str]:
@@ -126,8 +111,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str]],
     ):
-        if isinstance(y, np.ndarray):
-            y = np.squeeze(y)
+        y = self._to_np(y)
         return super().fit(X, y)
 
 

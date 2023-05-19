@@ -11,7 +11,7 @@ dependencies = [
 "tqdm>=4.60.0",
 ]
 name = "scikit-llm"
-version = "0.1.0b1"
+version = "0.1.0b2"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },

@@ -1,5 +1,6 @@
 import openai
 import json
+from skllm.openai.credentials import set_credentials
 
 def construct_message(role, content):
     if role not in ("system", "user", "assistant"):
@@ -7,8 +8,7 @@ def construct_message(role, content):
     return {"role": role, "content": content}
 
 def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries = 3):
-    openai.api_key = key
-    openai.organization = org
+    set_credentials(key, org)
     for _ in range(max_retries):
         try:
             completion = openai.ChatCompletion.create(
