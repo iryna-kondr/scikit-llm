@@ -1,0 +1,37 @@
+# Run a pre-commit autoupdate every week and open a pull request if needed
+name: Pre-commit auto-update
+
+on:
+  # At 00:00 on the 1st of every month.
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  pre-commit-auto-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+      - name: Install pre-commit
+        run: pip install pre-commit
+      - name: Run pre-commit
+        run: pre-commit autoupdate
+      - name: Set git config
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+      - uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ github.token }}
+          branch: update/pre-commit-hooks
+          title: Update pre-commit hooks
+          commit-message: "Update pre-commit hooks"
+          body: Update versions of pre-commit hooks to latest version.
+          labels: "dependencies,github_actions"
