@@ -1,0 +1,20 @@
+# Drafts the next Release notes as Pull Requests are merged (or commits are pushed) into "main" or "master"
+name: Draft next release
+
+on:
+  push:
+    branches: [main, "master"]
+
+permissions:
+  contents: read
+
+jobs:
+  update-release-draft:
+    permissions:
+      contents: write
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: release-drafter/release-drafter@v5
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
