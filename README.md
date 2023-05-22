@@ -17,7 +17,7 @@ pip install scikit-llm
 You can support the project in the following ways:
 
 - ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
-- <img src="https://s11.gifyu.com/images/17732-flying-bird.gif" alt="Your Image" style="height: 1em; vertical-align: middle;"> Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
+- <img src="https://s11.gifyu.com/images/17732-flying-bird.gif" alt="Your Image" style="height: 1em; width: 1em; vertical-align: middle;"> Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
 - 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section
 - 🔗 Post about Scikit-LLM on LinkedIn or other platforms
 
