@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 import random
-from tqdm import tqdm
 from abc import ABC, abstractmethod
 from sklearn.base import BaseEstimator, ClassifierMixin
 from skllm.openai.prompts import get_zero_shot_prompt_slc, get_zero_shot_prompt_mlc
@@ -26,22 +25,19 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
 
-    def _to_np(self, X):
-        return _to_numpy(X)
-
     def fit(
         self,
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
-        X = self._to_np(X)        
+        X = _to_numpy(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
-        X = self._to_np(X)
+        X = _to_numpy(X)
         predictions = []
-        for i in tqdm(range(len(X))):
+        for i in range(len(X)):
             predictions.append(self._predict_single(X[i]))
         return predictions
 
@@ -51,16 +47,12 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
 
     def _get_unique_targets(self, y):
         labels = self._extract_labels(y)
-
         counts = Counter(labels)
-
         total = sum(counts.values())
-
         classes, probs = [], []
         for l, c in counts.items():
             classes.append(l)
             probs.append(c / total)
-
         return classes, probs
 
     def _get_chat_completion(self, x):
@@ -96,23 +88,16 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            label = str(
-                extract_json_key(completion.choices[0].message["content"], "label")
-            )
+            label = str(extract_json_key(completion.choices[0].message["content"], "label"))
+        except KeyError:
+            label = ""
         except Exception as e:
             label = ""
 
         if label not in self.classes_:
             label = random.choices(self.classes_, self.probabilities_)[0]
-        return label
 
-    def fit(
-        self,
-        X: Optional[Union[np.ndarray, pd.Series, List[str]]],
-        y: Union[np.ndarray, pd.Series, List[str]],
-    ):
-        y = self._to_np(y)
-        return super().fit(X, y)
+        return label
 
 
 class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
@@ -131,9 +116,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _extract_labels(self, y) -> List[str]:
         labels = []
         for l in y:
-            for j in l:
-                labels.append(j)
-
+            labels.extend(l)
         return labels
 
     def _get_prompt(self, x) -> str:
@@ -143,22 +126,18 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         completion = self._get_chat_completion(x)
         try:
             labels = extract_json_key(completion.choices[0].message["content"], "label")
-            if not isinstance(labels, list):
-                raise RuntimeError("Invalid labels type, expected list")
+            if isinstance(labels, list):
+                labels = [l for l in labels if l in self.classes_]
+            else:
+                labels = []
+        except KeyError:
+            labels = []
         except Exception as e:
             labels = []
 
-        labels = list(filter(lambda l: l in self.classes_, labels))
-
         if len(labels) > self.max_labels:
-            labels = labels[: self.max_labels - 1]
+            labels = labels[:self.max_labels - 1]
         elif len(labels) < 1:
             labels = [random.choices(self.classes_, self.probabilities_)[0]]
-        return labels
 
-    def fit(
-        self,
-        X: Optional[Union[np.ndarray, pd.Series, List[str]]],
-        y: List[List[str]],
-    ):
-        return super().fit(X, y)
+        return labels
