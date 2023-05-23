@@ -26,7 +26,7 @@ def get_zero_shot_prompt_mlc(x, labels, max_cats):
         "",
         "Perform the following tasks:",
         "1. Identify to which categories the provided text belongs to with the highest probability.",
-        f"2. Assign the text sample to up to {max_cats} categories based on the probabilities.",
+        f"2. Assign the text sample to up to {max_cats} of these categories based on the probabilities.",
         "3. Provide your response in a JSON format containing a single key `label` and a value corresponding to the list of assigned categories. Do not provide any additional information except the JSON."
         "\n", 
         f"List of categories: {repr(labels)}"
