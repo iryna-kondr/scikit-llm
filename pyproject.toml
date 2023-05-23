@@ -72,7 +72,7 @@ target-version = ['py38', 'py39', 'py310', 'py311']
 [tool.isort]
 profile = "black"
 filter_files = true
-known_first_party = ["package", "package.*"]
+known_first_party = ["skllm", "skllm.*"]
 
 [tool.docformatter]
 close-quotes-on-newline = true # D209
