@@ -1,4 +1,5 @@
 import openai
+from time import sleep
 import json
 from skllm.openai.credentials import set_credentials
 
@@ -20,7 +21,7 @@ def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries =
         except Exception as e:
             error_msg = str(e)
             error_type =  type(e).__name__
-            continue
+            sleep(3)
     print(f"Could not obtain the completion after {max_retries} retries: `{error_type} :: {error_msg}`")
 
 def extract_json_key(json_, key):

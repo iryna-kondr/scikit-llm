@@ -1,1 +1,2 @@
 from skllm.preprocessing.gpt_vectorizer import GPTVectorizer
+from skllm.preprocessing.gpt_summarizer import GPTSummarizer

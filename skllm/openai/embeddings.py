@@ -1,4 +1,5 @@
 import openai
+from time import sleep
 from skllm.openai.credentials import set_credentials
 
 def get_embedding(
@@ -19,7 +20,7 @@ def get_embedding(
         except Exception as e:
             error_msg = str(e)
             error_type =  type(e).__name__
-            continue
+            sleep(3)
     raise RuntimeError(
         f"Could not obtain the embedding after {max_retries} retries: `{error_type} :: {error_msg}`"
     )

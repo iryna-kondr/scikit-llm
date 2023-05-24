@@ -147,6 +147,22 @@ clf.fit(X_train, y_train_encoded)
 yh = clf.predict(X_test)
 ```
 
+### Text Summarization
+
+GPT excels at performing summarization tasks. Therefore, we provide `GPTSummarizer` that can be used both as stand-alone estimator, or as a preprocessor (in this case we can make an analogy with a dimensionality reduction preprocessor).
+
+Example:
+```python
+from skllm.preprocessing import GPTSummarizer
+from skllm.datasets import get_summarization_dataset
+
+X = get_summarization_dataset()
+s = GPTSummarizer(openai_model = 'gpt-3.5-turbo', max_words = 15)
+summaries = s.fit_transform(X)
+```
+
+Please be aware that the `max_words` hyperparameter sets a soft limit, which is not strictly enforced outside of the prompt. Therefore, in some cases, the actual number of words might be slightly higher.
+
 ## Roadmap 🧭
 
 - [x] Zero-Shot Classification with OpenAI GPT 3/4
