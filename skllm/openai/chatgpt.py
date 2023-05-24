@@ -21,7 +21,7 @@ def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries =
             error_msg = str(e)
             error_type =  type(e).__name__
             continue
-    print(f"Could not obtain the completion after {max_retries} retrires: `{error_type} :: {error_msg}`")
+    print(f"Could not obtain the completion after {max_retries} retries: `{error_type} :: {error_msg}`")
 
 def extract_json_key(json_, key):
     try: 

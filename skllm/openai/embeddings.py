@@ -21,5 +21,5 @@ def get_embedding(
             error_type =  type(e).__name__
             continue
     raise RuntimeError(
-        f"Could not obtain the embedding after {max_retries} retrires: `{error_type} :: {error_msg}`"
+        f"Could not obtain the embedding after {max_retries} retries: `{error_type} :: {error_msg}`"
     )
