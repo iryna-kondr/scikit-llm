@@ -32,6 +32,10 @@ SKLLMConfig.set_openai_key("<YOUR_KEY>")
 SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 ```
 
+**Important notice:** 
+- If you have a free trial OpenAI account, the [rate limits](https://platform.openai.com/docs/guides/rate-limits/overview) are not sufficient (specifically 3 requests per minute). Please switch to the "pay as you go" plan first.
+- When calling `SKLLMConfig.set_openai_org`, you have to provide your organization ID and **NOT** the name. You can find your ID [here](https://platform.openai.com/account/org-settings).
+
 ### Zero-Shot Text Classification
 
 One of the powerful ChatGPT features is the ability to perform text classification without being re-trained. For that, the only requirement is that the labels must be descriptive.

@@ -9,14 +9,19 @@ def construct_message(role, content):
 
 def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries = 3):
     set_credentials(key, org)
+    error_msg = None
+    error_type = None
     for _ in range(max_retries):
         try:
             completion = openai.ChatCompletion.create(
                 model=model, temperature=0., messages=messages
             )
             return completion
-        except Exception:
+        except Exception as e:
+            error_msg = str(e)
+            error_type =  type(e).__name__
             continue
+    print(f"Could not obtain the completion after {max_retries} retrires: `{error_type} :: {error_msg}`")
 
 def extract_json_key(json_, key):
     try: 
