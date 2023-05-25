@@ -64,7 +64,7 @@ force-exclude = true
 "__init__.py" = ["E402", "F401", "F403", "F811"]
 
 [tool.ruff.pydocstyle]
-convention = "google"
+convention = "numpy"
 
 [tool.mypy]
 ignore_missing_imports = true
