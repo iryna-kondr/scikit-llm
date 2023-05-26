@@ -25,8 +25,8 @@ def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries =
     print(f"Could not obtain the completion after {max_retries} retries: `{error_type} :: {error_msg}`")
 
 def extract_json_key(json_, key):
-    try: 
-        as_json = json.loads(json_.replace('\n', '')) 
+    try:
+        as_json = json.loads(json_.replace('\n', ''))
         if key not in as_json.keys():
             raise KeyError("The required key was not found")
         return as_json[key]
