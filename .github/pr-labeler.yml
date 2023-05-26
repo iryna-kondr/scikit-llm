@@ -1,0 +1,4 @@
+feature: ['features/*', 'feature/*', 'feat/*', 'features-*', 'feature-*', 'feat-*']
+fix: ['fixes/*', 'fix/*']
+chore: ['chore/*']
+dependencies: ['update/*']
