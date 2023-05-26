@@ -1,0 +1,6 @@
+pre-commit
+black
+isort
+ruff
+docformatter
+interrogate

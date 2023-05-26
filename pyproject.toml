@@ -1,14 +1,13 @@
 [build-system]
-
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
 dependencies = [
-"scikit-learn>=1.1.0",
-"pandas>=1.5.0",
-"openai>=0.27.0",
-"tqdm>=4.60.0",
+  "scikit-learn>=1.1.0",
+  "pandas>=1.5.0",
+  "openai>=0.27.0",
+  "tqdm>=4.60.0",
 ]
 name = "scikit-llm"
 version = "0.1.0b3"
@@ -25,6 +24,70 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dynamic = ["optional-dependencies"]
+
+[tool.setuptools.dynamic.optional-dependencies]
+dev = { file = ["requirements-dev.txt"] }
+
+[tool.ruff]
+select = [
+    # pycodestyle
+    "E",
+    # pyflakes
+    "F",
+    # pydocstyle
+    "D",
+    # flake8-bandit
+    "S",
+    # pyupgrade
+    "UP",
+    # pep8-naming
+    "N",
+]
+# Error E501 (Line too long) is ignored because of docstrings.
+ignore = [
+    "S101",
+    "S301",
+    "S311",
+    "D100",
+    "D200",
+    "D203",
+    "D205",
+    "D401",
+    "E501",
+]
+extend-exclude = ["tests/*.py", "setup.py"]
+target-version = "py38"
+force-exclude = true
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["E402", "F401", "F403", "F811"]
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.black]
+preview = true
+target-version = ['py38', 'py39', 'py310', 'py311']
+
+[tool.isort]
+profile = "black"
+filter_files = true
+known_first_party = ["skllm", "skllm.*"]
+
+[tool.docformatter]
+close-quotes-on-newline = true # D209
+
+[tool.interrogate]
+fail-under = 80
+ignore-module = true
+ignore-nested-functions = true
+ignore-private = true
+exclude = ["tests", "setup.py"]
+
 [tool.pytest.ini_options]
 pythonpath = [
   "."
