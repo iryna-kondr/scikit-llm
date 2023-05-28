@@ -20,7 +20,7 @@ def build_zero_shot_prompt_slc(
         sample to classify
     labels : str
         candidate labels in a list-like representation
-    template : str, optional
+    template : str
         prompt template to use, must contain placeholders for all variables, by default ZERO_SHOT_CLF_PROMPT_TEMPLATE
 
     Returns
@@ -59,7 +59,7 @@ def build_zero_shot_prompt_mlc(
 
 
 def build_summary_prompt(
-    x: str, max_words: Union[int, str], template=SUMMARY_PROMPT_TEMPLATE
+    x: str, max_words: Union[int, str], template: str = SUMMARY_PROMPT_TEMPLATE
 ) -> str:
     """Builds a prompt for text summarization.
 
@@ -69,7 +69,7 @@ def build_summary_prompt(
         sample to summarize
     max_words : Union[int,str]
         maximum number of words to use in the summary
-    template : _type_, optional
+    template : str
         prompt template to use, must contain placeholders for all variables, by default SUMMARY_PROMPT_TEMPLATE
 
     Returns
