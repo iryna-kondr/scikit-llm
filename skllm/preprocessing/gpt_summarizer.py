@@ -1,9 +1,10 @@
-from skllm.openai.prompts import get_summary_prompt
 from typing import Optional
+
 from skllm.openai.base_gpt import BaseZeroShotGPTTransformer as _BaseGPT
+from skllm.prompts.builders import build_summary_prompt
+
 
 class GPTSummarizer(_BaseGPT):
-
     system_msg = "You are a text summarizer."
     default_output = "Summary is unavailable."
 
@@ -17,6 +18,6 @@ class GPTSummarizer(_BaseGPT):
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
         self.max_words = max_words
-    
+
     def _get_prompt(self, X) -> str:
-        return get_summary_prompt(X, self.max_words)
+        return build_summary_prompt(X, self.max_words)
