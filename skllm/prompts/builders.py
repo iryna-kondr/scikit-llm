@@ -2,6 +2,7 @@ from typing import Union
 
 from skllm.prompts.templates import (
     SUMMARY_PROMPT_TEMPLATE,
+    TRANSLATION_PROMPT_TEMPLATE,
     ZERO_SHOT_CLF_PROMPT_TEMPLATE,
     ZERO_SHOT_MLCLF_PROMPT_TEMPLATE,
 )
@@ -78,3 +79,25 @@ def build_summary_prompt(
         prepared prompt
     """
     return template.format(x=x, max_words=max_words)
+
+
+def build_translation_prompt(
+    x: str, output_language: str, template: str = TRANSLATION_PROMPT_TEMPLATE
+) -> str:
+    """Builds a prompt for text translation.
+
+    Parameters
+    ----------
+    x : str
+        sample to translate
+    output_language : str
+        language to translate to
+    template : str
+        prompt template to use, must contain placeholders for all variables, by default TRANSLATION_PROMPT_TEMPLATE
+
+    Returns
+    -------
+    str
+        prepared prompt
+    """
+    return template.format(x=x, output_language=output_language)
