@@ -57,6 +57,7 @@ ignore = [
     "E501",
     "N803",
     "N806",
+    "D104",
 ]
 extend-exclude = ["tests/*.py", "setup.py"]
 target-version = "py38"
