@@ -60,3 +60,18 @@ Summarize the text sample provided below, delimited by triple backticks, in at m
 Text sample: ```{x}```
 Summarized text:
 """
+
+TRANSLATION_PROMPT_TEMPLATE = """
+You will be provided with an arbitrary text sample, delimited by triple backticks.
+Your task is to translate this text to {output_language} language and output the translated text.
+
+Perform the following actions:
+1. Determine the language of the text sample.
+2. If the language is not {output_language}, translate the text sample to {output_language} language.
+3. Output the translated text.
+If the text sample provided is not in a recognizable language, output "No translation available".
+Do not output any additional information except the translated text.
+
+Text sample: ```{x}```
+Translated text:
+"""

@@ -192,6 +192,21 @@ summaries = s.fit_transform(X)
 
 Please be aware that the `max_words` hyperparameter sets a soft limit, which is not strictly enforced outside of the prompt. Therefore, in some cases, the actual number of words might be slightly higher.
 
+### Text Translation
+
+GPT models have demonstrated their effectiveness in translation tasks by generating accurate translations across various languages. Thus, we added `GPTTranslator` that allows translating an arbitraty text into a language of interest.
+
+Example:
+
+```python
+from skllm.preprocessing import GPTTranslator
+from skllm.datasets import get_translation_dataset
+
+X = get_translation_dataset()
+t = GPTTranslator(openai_model="gpt-3.5-turbo", output_language="English")
+translated_text = t.fit_transform(X)
+```
+
 ## Roadmap 🧭
 
 - [x] Zero-Shot Classification with OpenAI GPT 3/4
