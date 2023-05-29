@@ -34,7 +34,8 @@ SKLLMConfig.set_openai_key("<YOUR_KEY>")
 SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 ```
 
-**Important notice:** 
+**Important notice:**
+
 - If you have a free trial OpenAI account, the [rate limits](https://platform.openai.com/docs/guides/rate-limits/overview) are not sufficient (specifically 3 requests per minute). Please switch to the "pay as you go" plan first.
 - When calling `SKLLMConfig.set_openai_org`, you have to provide your organization ID and **NOT** the name. You can find your ID [here](https://platform.openai.com/account/org-settings).
 
@@ -121,6 +122,29 @@ clf.fit(None, [candidate_labels])
 labels = clf.predict(X)
 ```
 
+### Few-Shot Text Classification
+
+With `FewShotGPTClassifier` it is possible to perform a few-shot classification, which means that the training samples will be added to prompt and passed to the model.
+
+```python
+from skllm import FewShotGPTClassifier
+from skllm.datasets import get_classification_dataset
+
+X, y = get_classification_dataset()
+
+clf = FewShotGPTClassifier(openai_model="gpt-3.5-turbo")
+clf.fit(X, y)
+labels = clf.predict(X)
+```
+
+While the api remains the same as for the zero shot classifier, there are a few things to take into account:
+
+- the "training" requires some labelled training data;
+- the training set should be small enough to fit into a single prompt (we recommend up to 10 samples per label);
+- because of the significantly larger prompt, the inference takes longer and consumes higher amount of tokens.
+
+Note: as the model is not being re-trained, but uses the training data during inference, one could say that this is still a (different) zero-shot approach.
+
 ### Text Vectorization
 
 As an alternative to using GPT as a classifier, it can be used solely for data preprocessing. `GPTVectorizer` allows to embed a chunk of text of arbitrary length to a fixed-dimensional vector, that can be used with virtually any classification or regression model.
@@ -156,12 +180,13 @@ yh = clf.predict(X_test)
 GPT excels at performing summarization tasks. Therefore, we provide `GPTSummarizer` that can be used both as stand-alone estimator, or as a preprocessor (in this case we can make an analogy with a dimensionality reduction preprocessor).
 
 Example:
+
 ```python
 from skllm.preprocessing import GPTSummarizer
 from skllm.datasets import get_summarization_dataset
 
 X = get_summarization_dataset()
-s = GPTSummarizer(openai_model = 'gpt-3.5-turbo', max_words = 15)
+s = GPTSummarizer(openai_model="gpt-3.5-turbo", max_words=15)
 summaries = s.fit_transform(X)
 ```
 
@@ -172,12 +197,16 @@ Please be aware that the `max_words` hyperparameter sets a soft limit, which is 
 - [x] Zero-Shot Classification with OpenAI GPT 3/4
   - [x] Multiclass classification
   - [x] Multi-label classification
-  - [x] ChatGPT models
-  - [ ] InstructGPT models
-- [ ] Few shot classifier
+- [ ] Few-Shot classifier
+  - [x] Multiclass classification
+  - [ ] Multi-label classification
 - [x] GPT Vectorizer
-- [ ] GPT Fine-tuning (optional)
-- [ ] Integration of other LLMs
+- [x] ChatGPT models
+- [ ] InstructGPT models
+- [ ] InstructGPT Fine-tuning (optional)
+- [ ] Open source models
+
+*The order of the elements in the roadmap is arbitrary and does not reflect the planned order of implementation.*
 
 ## Contributing
 
