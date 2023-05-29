@@ -197,7 +197,7 @@ Please be aware that the `max_words` hyperparameter sets a soft limit, which is 
 - [x] Zero-Shot Classification with OpenAI GPT 3/4
   - [x] Multiclass classification
   - [x] Multi-label classification
-- [ ] Few shot classifier
+- [ ] Few-Shot classifier
   - [x] Multiclass classification
   - [ ] Multi-label classification
 - [x] GPT Vectorizer

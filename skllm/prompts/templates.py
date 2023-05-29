@@ -19,7 +19,7 @@ FEW_SHOT_CLF_PROMPT_TEMPLATE = """
 You will be provided with the following information:
 1. An arbitrary text sample. The sample is delimited with triple backticks.
 2. List of categories the text sample can be assigned to. The list is delimited with square brackets. The categories in the list are enclosed in the single quotes and comma separated.
-3. Examples of text samples and their assigned categories. The examples are delimited with triple backticks. The assigned categories are enclosed in a JSON-like structure. These examples are to be used as training data.
+3. Examples of text samples and their assigned categories. The examples are delimited with triple backticks. The assigned categories are enclosed in a list-like structure. These examples are to be used as training data.
 
 Perform the following tasks:
 1. Identify to which category the provided text belongs to with the highest probability.
