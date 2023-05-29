@@ -1,20 +1,25 @@
-from typing import Optional, Union, List, Any
+import random
+from abc import ABC, abstractmethod
+from collections import Counter
+from typing import Any, List, Optional, Union
+
 import numpy as np
 import pandas as pd
-from collections import Counter
-import random
-from tqdm import tqdm
-from abc import ABC, abstractmethod
 from sklearn.base import BaseEstimator, ClassifierMixin
-from skllm.openai.prompts import get_zero_shot_prompt_slc, get_zero_shot_prompt_mlc
+from tqdm import tqdm
+
 from skllm.openai.chatgpt import (
     construct_message,
-    get_chat_completion,
     extract_json_key,
+    get_chat_completion,
 )
-from skllm.config import SKLLMConfig as _Config
-from skllm.utils import to_numpy as _to_numpy
 from skllm.openai.mixin import OpenAIMixin as _OAIMixin
+from skllm.prompts.builders import (
+    build_zero_shot_prompt_mlc,
+    build_zero_shot_prompt_slc,
+)
+from skllm.utils import to_numpy as _to_numpy
+
 
 class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin):
     def __init__(
@@ -34,7 +39,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
-        X = self._to_np(X)        
+        X = self._to_np(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
@@ -91,7 +96,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return labels
 
     def _get_prompt(self, x) -> str:
-        return get_zero_shot_prompt_slc(x, self.classes_)
+        return build_zero_shot_prompt_slc(x, repr(self.classes_))
 
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
@@ -99,7 +104,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
             label = str(
                 extract_json_key(completion.choices[0].message["content"], "label")
             )
-        except Exception as e:
+        except Exception:
             label = ""
 
         if label not in self.classes_:
@@ -137,7 +142,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return labels
 
     def _get_prompt(self, x) -> str:
-        return get_zero_shot_prompt_mlc(x, self.classes_, self.max_labels)
+        return build_zero_shot_prompt_mlc(x, repr(self.classes_), self.max_labels)
 
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
@@ -145,7 +150,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
             labels = extract_json_key(completion.choices[0].message["content"], "label")
             if not isinstance(labels, list):
                 raise RuntimeError("Invalid labels type, expected list")
-        except Exception as e:
+        except Exception:
             labels = []
 
         labels = list(filter(lambda l: l in self.classes_, labels))
