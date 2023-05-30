@@ -34,13 +34,6 @@ SKLLMConfig.set_openai_key("<YOUR_KEY>")
 SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 ```
 
-```python
-from skllm.config import SKLLMConfig
-
-SKLLMConfig.set_openai_key("<YOUR_KEY>")
-SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
-```
-
 **Important notice:**
 
 - If you have a free trial OpenAI account, the [rate limits](https://platform.openai.com/docs/guides/rate-limits/overview) are not sufficient (specifically 3 requests per minute). Please switch to the "pay as you go" plan first.
