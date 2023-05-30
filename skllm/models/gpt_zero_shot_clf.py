@@ -8,11 +8,8 @@ import pandas as pd
 from sklearn.base import BaseEstimator, ClassifierMixin
 from tqdm import tqdm
 
-from skllm.openai.chatgpt import (
-    construct_message,
-    extract_json_key,
-    get_chat_completion,
-)
+from skllm.completions import get_chat_completion
+from skllm.openai.chatgpt import construct_message, extract_json_key
 from skllm.openai.mixin import OpenAIMixin as _OAIMixin
 from skllm.prompts.builders import (
     build_zero_shot_prompt_mlc,
@@ -101,14 +98,25 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            label = str(
-                extract_json_key(completion.choices[0].message["content"], "label")
-            )
-        except Exception:
+            if self.openai_model.startswith("gpt4all::"):
+                label = str(
+                    extract_json_key(
+                        completion["choices"][0]["message"]["content"], "label"
+                    )
+                )
+            else:
+                label = str(
+                    extract_json_key(completion.choices[0].message["content"], "label")
+                )
+        except Exception as e:
+            print(completion)
+            print(f"Could not extract the label from the completion: {str(e)}")
             label = ""
 
         if label not in self.classes_:
-            label = random.choices(self.classes_, self.probabilities_)[0]
+            label = label.replace("'", "").replace('"', "")
+            if label not in self.classes_:  # try again
+                label = random.choices(self.classes_, self.probabilities_)[0]
         return label
 
     def fit(

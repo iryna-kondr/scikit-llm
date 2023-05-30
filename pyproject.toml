@@ -10,7 +10,7 @@ dependencies = [
   "tqdm>=4.60.0",
 ]
 name = "scikit-llm"
-version = "0.1.0b3"
+version = "0.1.0"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
@@ -24,10 +24,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dynamic = ["optional-dependencies"]
 
-[tool.setuptools.dynamic.optional-dependencies]
-dev = { file = ["requirements-dev.txt"] }
+[project.optional-dependencies]
+gpt4all = ["gpt4all>=0.2.0"]
 
 [tool.ruff]
 select = [
