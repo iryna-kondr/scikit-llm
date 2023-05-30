@@ -48,7 +48,7 @@ In addition to OpenAI, some of the models can use [gpt4all](https://gpt4all.io/i
 In order to use gpt4all, you need to install the corresponding submodule:
 
 ```bash
-pip install scikit-llm[gpt4all]
+pip install "scikit-llm[gpt4all]"
 ```
 
 In order to switch from OpenAI to GPT4ALL model, simply provide a string of the format `gpt4all::<model_name>` as an argument. While the model runs completely locally, the estimator still treats it as an OpenAI endpoint and will try to check that the API key is present. You can provide any string as a key.
