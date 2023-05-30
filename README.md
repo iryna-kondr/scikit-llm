@@ -18,7 +18,7 @@ You can support the project in the following ways:
 
 - ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
 - 🐦 Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
-- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section
+- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section or [Discord](https://discord.gg/NTaRnRpf)
 - 🔗 Post about Scikit-LLM on LinkedIn or other platforms
 
 ## Documentation 📚
@@ -68,6 +68,11 @@ ZeroShotGPTClassifier(openai_model="gpt4all::ggml-gpt4all-j-v1.3-groovy")
 ```
 
 When running for the first time, the model file will be downloaded automatially.
+
+At the moment only the following estimators support gpt4all as a backend: 
+- `ZeroShotGPTClassifier`
+- `MultiLabelZeroShotGPTClassifier`
+- `FewShotGPTClassifier`
 
 When using gpt4all please keep the following in mind:
 
