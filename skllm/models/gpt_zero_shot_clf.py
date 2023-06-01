@@ -19,6 +19,18 @@ from skllm.utils import to_numpy as _to_numpy
 
 
 class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin):
+    """
+    A base class for zero-shot classification using GPT-3.
+
+    Initialization Parameters
+    ----------
+    openai_key : str, optional
+        The OPEN AI key to use. Defaults to None.
+    openai_org : str, optional
+        The OPEN AI organization to use. Defaults to None.
+    openai_model : str, optional
+        The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
+    """
     def __init__(
         self,
         openai_key: Optional[str] = None,
@@ -29,6 +41,19 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         self.openai_model = openai_model
 
     def _to_np(self, X):
+        """
+        Convert X to a numpy array.
+        
+        Parameters
+        ----------
+        X : Any
+            The input data to convert to a numpy array.
+        
+        Returns
+        -------
+        np.ndarray
+            The input data as a numpy array.
+        """
         return _to_numpy(X)
 
     def fit(

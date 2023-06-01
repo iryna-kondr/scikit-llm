@@ -1,8 +1,21 @@
 import numpy as np
 import pandas as pd
 
+from typing import Any
 
-def to_numpy(X):
+def to_numpy(X: Any) -> np.ndarray:
+    """
+    Convert a pandas Series or list to a numpy array.
+
+    Parameters
+    ----------
+    X : pd.Series or list
+        The data to convert to a numpy array.
+    
+    Returns
+    -------
+    X : np.ndarray
+    """
     if isinstance(X, pd.Series):
         X = X.to_numpy().astype(object)
     elif isinstance(X, list):
@@ -12,11 +25,24 @@ def to_numpy(X):
     return X
 
 
-def find_json_in_string(string):
+def find_json_in_string(string: str) -> str:
+    """
+    Find the first JSON object in a string.
+    
+    Parameters
+    ----------
+    string : str
+        The string to search for a JSON object.
+    
+    Returns
+    -------
+    json_string : str
+    """
+
     start = string.find("{")
     end = string.rfind("}")
     if start != -1 and end != -1:
         json_string = string[start : end + 1]
     else:
-        json_string = {}
+        json_string = "{}"
     return json_string

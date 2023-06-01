@@ -16,7 +16,7 @@ class GPTTranslator(_BaseGPT):
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
         output_language: str = "English",
-    ):
+    ) -> None:
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
         self.output_language = output_language

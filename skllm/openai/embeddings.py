@@ -3,8 +3,29 @@ from time import sleep
 from skllm.openai.credentials import set_credentials
 
 def get_embedding(
-    text, key: str, org: str, model="text-embedding-ada-002", max_retries=3
-):
+    text: str, key: str, org: str, model: str="text-embedding-ada-002", max_retries: int=3
+):  
+    """
+    Encode a string and return the GPT embedding for a string.
+
+    Parameters
+    ----------
+    text : str
+        The string to encode.
+    key : str
+        The OPEN AI key to use.
+    org : str
+        The OPEN AI organization to use.
+    model : str, optional  
+        The OPEN AI model to use. Defaults to "text-embedding-ada-002".
+    max_retries : int, optional
+        The maximum number of retries to use. Defaults to 3.
+    
+    Returns
+    -------
+    emb : list
+        The GPT embedding for the string.
+    """
     set_credentials(key, org)
     text = text.replace("\n", " ")
     error_msg = None
