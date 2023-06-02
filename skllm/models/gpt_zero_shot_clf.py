@@ -27,7 +27,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
     openai_key : str, optional
         The OPEN AI key to use. Defaults to None.
     openai_org : str, optional
-        The OPEN AI organization to use. Defaults to None.
+        The OPEN AI organization ID to use. Defaults to None.
     openai_model : str, optional
         The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
     """
@@ -66,6 +66,18 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         return self
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
+        """
+        Predict the class of each input.
+        
+        Parameters
+        ----------
+        X : Union[np.ndarray, pd.Series, List[str]]
+            The input data to predict the class of.
+        
+        Returns
+        -------
+        List[str]
+        """
         X = self._to_np(X)
         predictions = []
         for i in tqdm(range(len(X))):
@@ -76,7 +88,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
     def _extract_labels(self, y: Any) -> List[str]:
         pass
 
-    def _get_unique_targets(self, y):
+    def _get_unique_targets(self, y:Any):
         labels = self._extract_labels(y)
 
         counts = Counter(labels)
@@ -102,6 +114,9 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
 
 
 class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
+    """
+    A zero-shot classifier using GPT-3.
+    """
     def __init__(
         self,
         openai_key: Optional[str] = None,
@@ -111,6 +126,17 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         super().__init__(openai_key, openai_org, openai_model)
 
     def _extract_labels(self, y: Any) -> List[str]:
+        """
+        Return the class labels as a list.
+
+        Parameters
+        ----------
+        y : Any
+        
+        Returns
+        -------
+        List[str]
+        """
         if isinstance(y, (pd.Series, np.ndarray)):
             labels = y.tolist()
         else:
@@ -120,7 +146,19 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _get_prompt(self, x) -> str:
         return build_zero_shot_prompt_slc(x, repr(self.classes_))
 
-    def _predict_single(self, x):
+    def _predict_single(self, x: str) -> str:
+        """
+        Predict the class for a single input.
+
+        Parameters
+        ----------
+        x : str
+            The input to predict the class of.
+        
+        Returns
+        -------
+        str
+        """
         completion = self._get_chat_completion(x)
         try:
             if self.openai_model.startswith("gpt4all::"):
@@ -154,6 +192,20 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
 
 
 class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
+    """
+    A zero-shot classifier using GPT-3 for multi-label classification.
+    
+    Initialization Parameters
+    ----------
+    openai_key : str, optional
+        The OPEN AI key to use. Defaults to None.
+    openai_org : str, optional
+        The OPEN AI organization ID to use. Defaults to None.
+    openai_model : str, optional
+        The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
+    max_labels : int, optional
+        The maximum number of labels to predict. Defaults to 3.
+    """
     def __init__(
         self,
         openai_key: Optional[str] = None,
@@ -167,6 +219,17 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         self.max_labels = max_labels
 
     def _extract_labels(self, y) -> List[str]:
+        """
+        Extract the labels into a list.
+
+        Parameters
+        ----------
+        y : Any
+
+        Returns
+        -------
+        List[str]
+        """
         labels = []
         for l in y:
             for j in l:
@@ -177,7 +240,19 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _get_prompt(self, x) -> str:
         return build_zero_shot_prompt_mlc(x, repr(self.classes_), self.max_labels)
 
-    def _predict_single(self, x):
+    def _predict_single(self, x) -> List[str]:
+        """
+        Predict the class for a single input.
+
+        Parameters
+        ----------
+        x : str
+            The input to predict the class of.
+        
+        Returns
+        -------
+        str
+        """
         completion = self._get_chat_completion(x)
         try:
             labels = extract_json_key(completion.choices[0].message["content"], "label")
@@ -199,4 +274,15 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: List[List[str]],
     ):
+        """
+        Calls the parent fit method.
+        
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input data.
+        y : List[List[str]]
+            The labels.
+        
+        """
         return super().fit(X, y)

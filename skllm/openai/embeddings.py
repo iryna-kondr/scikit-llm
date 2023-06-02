@@ -15,7 +15,7 @@ def get_embedding(
     key : str
         The OPEN AI key to use.
     org : str
-        The OPEN AI organization to use.
+        The OPEN AI organization ID to use.
     model : str, optional  
         The OPEN AI model to use. Defaults to "text-embedding-ada-002".
     max_retries : int, optional

@@ -20,6 +20,19 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
     default_output = "Output is unavailable"
 
     def _get_chat_completion(self, X):
+        """
+        Get the chat completion for the given input using open ai API.
+
+        Parameters
+        ----------
+        X : str
+            Input string
+        
+        Returns
+        -------
+        str
+        
+        """
         prompt = self._get_prompt(X)
         msgs = []
         msgs.append(construct_message("system", self.system_msg))
@@ -33,10 +46,37 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
             print(f"Skipping a sample due to the following error: {str(e)}")
             return self.default_output
             
-    def fit(self, X: Any = None, y: Any = None, **kwargs: Any):
+    def fit(self, X: Any = None, y: Any = None, **kwargs: Any) -> "_BaseZeroShotGPTTransformer":
+        """
+        This method is modelled to function as the sklearn fit method
+        This method does not do anything and is only present to make the
+        class compatible with sklearn pipelines.
+
+        Parameters
+        ----------
+        X : Any, optional
+        y : Any, optional
+        kwargs : dict, optional
+
+        Returns
+        -------
+        self : BaseZeroShotGPTTransformer
+        """
+
         return self
 
     def transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], **kwargs: Any) -> ndarray:
+        """
+        Convert a list of strings using the open ai API and a predefined prompt.
+
+        Parameters
+        ----------
+        X : Union[np.ndarray, pd.Series, List[str]]
+
+        Returns
+        -------
+        ndarray
+        """
         X = _to_numpy(X)
         transformed = []
         for i in tqdm(range(len(X))):
@@ -47,4 +87,16 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
         return transformed
 
     def fit_transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], y=None, **fit_params) -> ndarray:
+        """
+        Fit and transform a list of strings using the transform method.
+        This is modelled to function as the sklearn fit_transform method
+
+        Parameters
+        ----------
+        X : np.ndarray, pd.Series, or list
+
+        Returns
+        -------
+        ndarray       
+        """
         return self.fit(X, y).transform(X)

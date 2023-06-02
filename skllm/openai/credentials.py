@@ -9,7 +9,7 @@ def set_credentials(key: str, org: str) -> None:
     key : str
         The OpenAI key to use.
     org : str
-        The OpenAI organization to use.
+        The OPEN AI organization ID to use.
     """
     openai.api_key = key
     openai.organization = org

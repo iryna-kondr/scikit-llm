@@ -13,7 +13,7 @@ class GPTSummarizer(_BaseGPT):
     openai_key : str, optional
         The OPEN AI key to use. Defaults to None.
     openai_org : str, optional
-        The OPEN AI organization to use. Defaults to None.
+        The OPEN AI organization ID to use. Defaults to None.
     openai_model : str, optional
         The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
     max_words : int, optional
@@ -33,7 +33,7 @@ class GPTSummarizer(_BaseGPT):
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
         self.max_words = max_words
-        
+
 
     def _get_prompt(self, X: str) -> str:
         """

@@ -29,7 +29,7 @@ class OpenAIMixin:
 
     def _get_openai_org(self) -> str:
         """
-        Get the OpenAI organization from the class or the config file.
+        Get the OpenAI organization ID from the class or the config file.
 
         Returns
         -------

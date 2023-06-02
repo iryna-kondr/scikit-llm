@@ -39,7 +39,7 @@ def get_chat_completion(messages: str, key: str, org: str, model: str="gpt-3.5-t
     key : str
         The OPEN AI key to use.
     org : str
-        The OPEN AI organization to use.
+        The OPEN AI organization ID to use.
     model : str, optional
         The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
     max_retries : int, optional

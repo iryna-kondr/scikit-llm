@@ -23,7 +23,7 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
     openai_key : str, optional
         The OPEN AI key to use. Defaults to None.
     openai_org : str, optional
-        The OPEN AI organization to use. Defaults to None.
+        The OPEN AI organization ID to use. Defaults to None.
     """
     def __init__(
         self,
@@ -37,7 +37,9 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
     def fit(self, X: Any = None, y: Any = None, **kwargs) -> "GPTVectorizer":
         """
         Fit the GPTVectorizer to the data.
-        This is modelled to function as the sklearn fit method
+        This is modelled to function as the sklearn fit method.
+        This method does not do anything and is only present to make the
+        GPTVectorizer compatible with sklearn pipelines.
 
         Parameters
         ----------
