@@ -47,7 +47,6 @@ class TestZeroShotGPTClassifier(unittest.TestCase):
         self.assertEqual(predictions, ["class1", "class1", "class1"])
 
 
-
 class TestMultiLabelZeroShotGPTClassifier(unittest.TestCase):
 
     def get_mock_clf_model(self):

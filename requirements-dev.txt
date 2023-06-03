@@ -6,4 +6,3 @@ docformatter
 interrogate
 numpy
 pandas
-pytest
