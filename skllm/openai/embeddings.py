@@ -1,6 +1,9 @@
-import openai
 from time import sleep
+
+import openai
+
 from skllm.openai.credentials import set_credentials
+
 
 def get_embedding(
     text, key: str, org: str, model="text-embedding-ada-002", max_retries=3

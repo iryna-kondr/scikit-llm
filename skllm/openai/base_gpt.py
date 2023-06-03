@@ -1,18 +1,16 @@
+from typing import Any, List, Optional, Union
+
 import numpy as np
-from numpy import ndarray
 import pandas as pd
-from skllm.utils import to_numpy as _to_numpy
-from typing import Any, Optional, Union, List
-from skllm.openai.mixin import OpenAIMixin as _OAIMixin
+from numpy import ndarray
+from sklearn.base import BaseEstimator as _BaseEstimator
+from sklearn.base import TransformerMixin as _TransformerMixin
 from tqdm import tqdm
-from sklearn.base import (
-    BaseEstimator as _BaseEstimator,
-    TransformerMixin as _TransformerMixin,
-)
-from skllm.openai.chatgpt import (
-    construct_message,
-    get_chat_completion,
-)
+
+from skllm.openai.chatgpt import construct_message, get_chat_completion
+from skllm.openai.mixin import OpenAIMixin as _OAIMixin
+from skllm.utils import to_numpy as _to_numpy
+
 
 class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin): 
     

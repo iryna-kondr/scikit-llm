@@ -4,3 +4,6 @@ isort
 ruff
 docformatter
 interrogate
+numpy
+pandas
+pytest
