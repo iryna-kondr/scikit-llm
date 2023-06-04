@@ -98,16 +98,11 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            if self.openai_model.startswith("gpt4all::"):
-                label = str(
-                    extract_json_key(
-                        completion["choices"][0]["message"]["content"], "label"
-                    )
+            label = str(
+                extract_json_key(
+                    completion["choices"][0]["message"]["content"], "label"
                 )
-            else:
-                label = str(
-                    extract_json_key(completion.choices[0].message["content"], "label")
-                )
+            )
         except Exception as e:
             print(completion)
             print(f"Could not extract the label from the completion: {str(e)}")
@@ -155,10 +150,13 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            labels = extract_json_key(completion.choices[0].message["content"], "label")
+            labels = extract_json_key(completion["choices"][0]["message"]["content"], "label")
             if not isinstance(labels, list):
-                raise RuntimeError("Invalid labels type, expected list")
-        except Exception:
+                labels = labels.split(",")
+                labels = [l.strip() for l in labels]
+        except Exception as e:
+            print(completion)
+            print(f"Could not extract the label from the completion: {str(e)}")
             labels = []
 
         labels = list(filter(lambda l: l in self.classes_, labels))
