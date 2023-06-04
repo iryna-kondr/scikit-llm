@@ -10,7 +10,7 @@ from skllm.utils import find_json_in_string
 
 def construct_message(role: str, content: str) -> dict:
     """
-    Construct a message for the OpenAI API.
+    Constructs a message for the OpenAI API.
     
     Parameters
     ----------
@@ -28,13 +28,13 @@ def construct_message(role: str, content: str) -> dict:
     return {"role": role, "content": content}
 
 
-def get_chat_completion(messages: str, key: str, org: str, model: str="gpt-3.5-turbo", max_retries: int=3):
+def get_chat_completion(messages: dict, key: str, org: str, model: str="gpt-3.5-turbo", max_retries: int=3):
     """
-    Get a chat completion from the OpenAI API.
+    Gets a chat completion from the OpenAI API.
     
     Parameters
     ----------
-    messages : str
+    messages : dict
         input messages to use.
     key : str
         The OPEN AI key to use.
@@ -69,7 +69,15 @@ def get_chat_completion(messages: str, key: str, org: str, model: str="gpt-3.5-t
 
 
 
-def extract_json_key(json_, key):
+def extract_json_key(json_: str, key: str):
+    """
+    Extracts JSON key from a string.
+
+    json_ : str
+        The JSON string to extract the key from.
+    key : str
+        The key to extract.
+    """
     original_json = json_
     for i in range(2):
         try:

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, List, Optional, Union
 
 import numpy as np
@@ -19,7 +21,7 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def _get_chat_completion(self, X):
         """
-        Get the chat completion for the given input using open ai API.
+        Gets the chat completion for the given input using open ai API.
 
         Parameters
         ----------
@@ -44,11 +46,9 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
             print(f"Skipping a sample due to the following error: {str(e)}")
             return self.default_output
             
-    def fit(self, X: Any = None, y: Any = None, **kwargs: Any) -> "_BaseZeroShotGPTTransformer":
+    def fit(self, X: Any = None, y: Any = None, **kwargs: Any) -> BaseZeroShotGPTTransformer:
         """
-        This method is modelled to function as the sklearn fit method
-        This method does not do anything and is only present to make the
-        class compatible with sklearn pipelines.
+        Fits the model to the data.
 
         Parameters
         ----------
@@ -65,7 +65,7 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], **kwargs: Any) -> ndarray:
         """
-        Convert a list of strings using the open ai API and a predefined prompt.
+        Converts a list of strings using the open ai API and a predefined prompt.
 
         Parameters
         ----------
@@ -86,7 +86,7 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def fit_transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], y=None, **fit_params) -> ndarray:
         """
-        Fit and transform a list of strings using the transform method.
+        Fits and transforms a list of strings using the transform method.
         This is modelled to function as the sklearn fit_transform method
 
         Parameters

@@ -10,8 +10,7 @@ _loaded_models = {}
 
 def get_chat_completion(messages: Dict, model: str="ggml-gpt4all-j-v1.3-groovy") -> Dict:
     """
-    Get a chat completion from GPT4All which Format list of message dictionaries into a prompt and call model
-    generate on prompt
+    Gets a chat completion from GPT4All
 
     Parameters
     ----------

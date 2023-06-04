@@ -5,11 +5,11 @@ from typing import Any
 
 def to_numpy(X: Any) -> np.ndarray:
     """
-    Convert a pandas Series or list to a numpy array.
+    Converts a pandas Series or list to a numpy array.
 
     Parameters
     ----------
-    X : pd.Series or list
+    X : Any
         The data to convert to a numpy array.
     
     Returns
@@ -27,7 +27,7 @@ def to_numpy(X: Any) -> np.ndarray:
 
 def find_json_in_string(string: str) -> str:
     """
-    Find the JSON object in a string.
+    Finds the JSON object in a string.
     
     Parameters
     ----------

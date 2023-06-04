@@ -9,7 +9,7 @@ def get_embedding(
     text: str, key: str, org: str, model: str="text-embedding-ada-002", max_retries: int=3
 ):  
     """
-    Encode a string and return the GPT embedding for a string.
+    Encodes a string and return the embedding for a string.
 
     Parameters
     ----------
@@ -20,7 +20,7 @@ def get_embedding(
     org : str
         The OPEN AI organization ID to use.
     model : str, optional  
-        The OPEN AI model to use. Defaults to "text-embedding-ada-002".
+        The model to use. Defaults to "text-embedding-ada-002".
     max_retries : int, optional
         The maximum number of retries to use. Defaults to 3.
     

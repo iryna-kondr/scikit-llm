@@ -25,8 +25,7 @@ class FewShotGPTClassifier(_ZeroShotGPTClassifier):
         X: Union[np.ndarray, pd.Series, List[str]],
         y: Union[np.ndarray, pd.Series, List[str]],
     ):
-        """Fits the model by storing the training data and extracting the
-        unique targets.
+        """Fits the model to the given data.
 
         Parameters
         ----------

@@ -38,10 +38,8 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def fit(self, X: Any = None, y: Any = None, **kwargs) -> GPTVectorizer:
         """
-        Fit the GPTVectorizer to the data.
+        Fits the GPTVectorizer to the data.
         This is modelled to function as the sklearn fit method.
-        This method does not do anything and is only present to make the
-        GPTVectorizer compatible with sklearn pipelines.
 
         Parameters
         ----------
@@ -57,8 +55,8 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]]) -> ndarray:
         """
-        Transform a list of strings into a list of GPT embeddings.
-        This is modelled to function as the sklearn transform meethod
+        Transforms a list of strings into a list of GPT embeddings.
+        This is modelled to function as the sklearn transform method
 
         Parameters
         ----------
@@ -80,7 +78,7 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
     def fit_transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], y=None, **fit_params) -> ndarray:
         """
-        Fit and transform a list of strings into a list of GPT embeddings.
+        Fits and transforms a list of strings into a list of GPT embeddings.
         This is modelled to function as the sklearn fit_transform method
 
         Parameters

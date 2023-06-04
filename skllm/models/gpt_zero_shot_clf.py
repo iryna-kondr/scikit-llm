@@ -49,7 +49,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
 
     def _to_np(self, X):
         """
-        Convert X to a numpy array.
+        Converts X to a numpy array.
         
         Parameters
         ----------
@@ -74,7 +74,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
         """
-        Fits the model by storing the training data and extracting the unique targets.
+        Extracts the target for each datapoint in X.
         
         Parameters
         ----------
@@ -91,7 +91,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
         """
-        Predict the class of each input.
+        Predicts the class of each input.
         
         Parameters
         ----------
@@ -193,6 +193,9 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
             return self.default_label
 
     def _predict_single(self, x):
+        """
+        Predicts the labels for a single sample.
+        """
         completion = self._get_chat_completion(x)
         try:
             label = str(
@@ -256,7 +259,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
 
     def _extract_labels(self, y) -> List[str]:
         """
-        Extract the labels into a list.
+        Extracts the labels into a list.
 
         Parameters
         ----------
@@ -290,6 +293,9 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return result
 
     def _predict_single(self, x):
+        """
+        Predicts the labels for a single sample.
+        """
         completion = self._get_chat_completion(x)
         try:
             labels = extract_json_key(completion["choices"][0]["message"]["content"], "label")
@@ -314,7 +320,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         y: List[List[str]],
     ):
         """
-        Calls the parent fit method.
+        Calls the parent fit method on input data.
         
         Parameters
         ----------
