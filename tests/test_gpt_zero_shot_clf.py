@@ -36,15 +36,15 @@ class TestZeroShotGPTClassifier(unittest.TestCase):
         mock_get_chat_completion.return_value.choices[0].message = {"content": json.dumps({"label": "new_class"})}
 
         predictions = clf.predict(["text1", "text2", "text3"])
-        self.assertEqual(predictions, [None, None, None])
+        self.assertEqual(predictions, ["class1", "class1", "class1"])  # Random choice
 
         clf.default_label = "default_class"
         predictions = clf.predict(["text1", "text2", "text3"])
         self.assertEqual(predictions, ["default_class", "default_class", "default_class"])
 
-        clf.default_label = "Random"
+        clf.default_label = None
         predictions = clf.predict(["text1", "text2", "text3"])
-        self.assertEqual(predictions, ["class1", "class1", "class1"])
+        self.assertEqual(predictions, [None, None, None])
 
 
 class TestMultiLabelZeroShotGPTClassifier(unittest.TestCase):
@@ -75,15 +75,15 @@ class TestMultiLabelZeroShotGPTClassifier(unittest.TestCase):
         mock_get_chat_completion.return_value.choices[0].message = {"content": json.dumps({"label": "new_class"})}
 
         predictions = clf.predict(["text1", "text2", "text3"])
+        self.assertEqual(predictions, [['class1'], [], ['class1', 'class2']])  # Random choice
+
+        clf.default_label = ["default_class"]
+        predictions = clf.predict(["text1", "text2", "text3"])
+        self.assertEqual(predictions, [["default_class"], ["default_class"], ["default_class"]])
+
+        clf.default_label = None
+        predictions = clf.predict(["text1", "text2", "text3"])
         self.assertEqual(predictions, [None, None, None])
-
-        clf.default_label = "default_class"
-        predictions = clf.predict(["text1", "text2", "text3"])
-        self.assertEqual(predictions, ["default_class", "default_class", "default_class"])
-
-        clf.default_label = "Random"
-        predictions = clf.predict(["text1", "text2", "text3"])
-        self.assertEqual(predictions, [['class1'], [], ['class1', 'class2']])
 
 
 if __name__ == '__main__':

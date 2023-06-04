@@ -31,9 +31,9 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
     openai_model : str , default : "gpt-3.5-turbo"
         The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
         available models.
-    default_label : Optional[str] , default : None
+    default_label : Optional[Union[List[str], str]] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
-        label will be chosen based on probabilities from the training set. Is set to None by default.
+        label will be chosen based on probabilities from the training set.
     random_state : int, default 42
         A seed to set for pseudo-random functions, primarily random selection.
     """
@@ -43,7 +43,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
-        default_label: Optional[str] = None,
+        default_label: Optional[Union[List[str], str]] = 'Random',
         random_state: int = 42,
     ):
         self._set_keys(openai_key, openai_org)
@@ -118,9 +118,9 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     openai_model : str , default : "gpt-3.5-turbo"
         The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
         available models.
-    default_label : Optional[str] , default : None
+    default_label : Optional[str] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
-        label will be chosen based on probabilities from the training set. Is set to None by default.
+        label will be chosen based on probabilities from the training set.
     random_state : int, default 42
         A seed to set for pseudo-random functions, primarily random selection.
     """
@@ -130,7 +130,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
-        default_label: Optional[str] = None,
+        default_label: Optional[str] = 'Random',
         random_state: int = 42,
     ):
         super().__init__(openai_key, openai_org, openai_model, default_label, random_state)
@@ -198,9 +198,9 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     openai_model : str , default : "gpt-3.5-turbo"
         The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
         available models.
-    default_label : Optional[str] , default : None
+    default_label : Optional[Union[List[str], str]] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
-        label will be chosen based on probabilities from the training set. Is set to None by default.
+        label will be chosen based on probabilities from the training set.
     max_labels : int , default : 3
         The maximum number of labels to predict for each sample.
     random_state : int, default 42
@@ -211,13 +211,15 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
-        default_label: Optional[str] = None,
+        default_label: Optional[Union[List[str], str]] = 'Random',
         max_labels: int = 3,
         random_state: int = 42,
     ):
         super().__init__(openai_key, openai_org, openai_model, default_label, random_state)
         if max_labels < 2:
             raise ValueError("max_labels should be at least 2")
+        if isinstance(default_label, str) and default_label != "Random":
+            raise ValueError("default_label should be a list of strings or 'Random'")
         self.max_labels = max_labels
 
     def _extract_labels(self, y) -> List[str]:
@@ -234,13 +236,14 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _get_default_label(self):
         """ Returns the default label based on the default_label argument. """
         result = []
-        if self.default_label == "Random":
+        if isinstance(self.default_label, str) and self.default_label == "Random":
             for cls, probability in zip(self.classes_, self.probabilities_):
                 coin_flip = random.choices([0,1], [1-probability, probability])[0]
                 if coin_flip == 1:
                     result.append(cls)
         else:
             result = self.default_label
+
         return result
 
     def _predict_single(self, x):
@@ -253,11 +256,10 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
             labels = []
 
         labels = list(filter(lambda l: l in self.classes_, labels))
-
-        if len(labels) > self.max_labels:
-            labels = labels[: self.max_labels - 1]
-        elif len(labels) == 0:
+        if len(labels) == 0:
             labels = self._get_default_label()
+        if labels is not None and len(labels) > self.max_labels:
+            labels = random.choices(labels, k=self.max_labels)
         return labels
 
     def fit(
