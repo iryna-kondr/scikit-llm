@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 from collections import Counter
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Literal
 
 import numpy as np
 import pandas as pd
@@ -19,26 +19,33 @@ from skllm.utils import to_numpy as _to_numpy
 
 
 class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin):
-    """
-    A base class for zero-shot classification using GPT-3.
+    """Base class for zero-shot classifiers.
 
-    Initialization Parameters
+    Parameters
     ----------
-    openai_key : str, optional
-        The OPEN AI key to use. Defaults to None.
-    openai_org : str, optional
-        The OPEN AI organization ID to use. Defaults to None.
-    openai_model : str, optional
-        The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
+    openai_key : Optional[str] , default : None
+        Your OpenAI API key. If None, the key will be read from the SKLLM_CONFIG_OPENAI_KEY environment variable.
+    openai_org : Optional[str] , default : None
+        Your OpenAI organization. If None, the organization will be read from the SKLLM_CONFIG_OPENAI_ORG
+         environment variable.
+    openai_model : str , default : "gpt-3.5-turbo"
+        The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
+        available models.
+    default_label : Optional[Union[List[str], str]] , default : 'Random'
+        The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
+        label will be chosen based on probabilities from the training set.
     """
+    
     def __init__(
         self,
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
+        default_label: Optional[Union[List[str], str]] = 'Random',
     ):
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
+        self.default_label = default_label
 
     def _to_np(self, X):
         """
@@ -55,6 +62,11 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
             The input data as a numpy array.
         """
         return _to_numpy(X)
+
+    @abstractmethod
+    def _get_default_label(self):
+        """ Returns the default label based on the default_label argument. """
+        raise NotImplementedError()
 
     def fit(
         self,
@@ -114,16 +126,31 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
 
 
 class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
+    """Zero-shot classifier for multiclass classification.
+
+    Parameters
+    ----------
+    openai_key : Optional[str] , default : None
+        Your OpenAI API key. If None, the key will be read from the SKLLM_CONFIG_OPENAI_KEY environment variable.
+    openai_org : Optional[str] , default : None
+        Your OpenAI organization. If None, the organization will be read from the SKLLM_CONFIG_OPENAI_ORG
+         environment variable.
+    openai_model : str , default : "gpt-3.5-turbo"
+        The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
+        available models.
+    default_label : Optional[str] , default : 'Random'
+        The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
+        label will be chosen based on probabilities from the training set.
     """
-    A zero-shot classifier using GPT-3.
-    """
+
     def __init__(
         self,
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
+        default_label: Optional[str] = 'Random',
     ):
-        super().__init__(openai_key, openai_org, openai_model)
+        super().__init__(openai_key, openai_org, openai_model, default_label)
 
     def _extract_labels(self, y: Any) -> List[str]:
         """
@@ -146,31 +173,21 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _get_prompt(self, x) -> str:
         return build_zero_shot_prompt_slc(x, repr(self.classes_))
 
-    def _predict_single(self, x: str) -> str:
-        """
-        Predict the class for a single input.
+    def _get_default_label(self):
+        """ Returns the default label based on the default_label argument. """
+        if self.default_label == "Random":
+            return random.choices(self.classes_, self.probabilities_)[0]
+        else:
+            return self.default_label
 
-        Parameters
-        ----------
-        x : str
-            The input to predict the class of.
-        
-        Returns
-        -------
-        str
-        """
+    def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            if self.openai_model.startswith("gpt4all::"):
-                label = str(
-                    extract_json_key(
-                        completion["choices"][0]["message"]["content"], "label"
-                    )
+            label = str(
+                extract_json_key(
+                    completion["choices"][0]["message"]["content"], "label"
                 )
-            else:
-                label = str(
-                    extract_json_key(completion.choices[0].message["content"], "label")
-                )
+            )
         except Exception as e:
             print(completion)
             print(f"Could not extract the label from the completion: {str(e)}")
@@ -179,7 +196,7 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         if label not in self.classes_:
             label = label.replace("'", "").replace('"', "")
             if label not in self.classes_:  # try again
-                label = random.choices(self.classes_, self.probabilities_)[0]
+                label = self._get_default_label()
         return label
 
     def fit(
@@ -192,30 +209,37 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
 
 
 class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
-    """
-    A zero-shot classifier using GPT-3 for multi-label classification.
-    
-    Initialization Parameters
+    """Zero-shot classifier for multilabel classification.
+
+    Parameters
     ----------
-    openai_key : str, optional
-        The OPEN AI key to use. Defaults to None.
-    openai_org : str, optional
-        The OPEN AI organization ID to use. Defaults to None.
-    openai_model : str, optional
-        The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
-    max_labels : int, optional
-        The maximum number of labels to predict. Defaults to 3.
+    openai_key : Optional[str] , default : None
+        Your OpenAI API key. If None, the key will be read from the SKLLM_CONFIG_OPENAI_KEY environment variable.
+    openai_org : Optional[str] , default : None
+        Your OpenAI organization. If None, the organization will be read from the SKLLM_CONFIG_OPENAI_ORG
+         environment variable.
+    openai_model : str , default : "gpt-3.5-turbo"
+        The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
+        available models.
+    default_label : Optional[Union[List[str], Literal['Random']] , default : 'Random'
+        The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
+        label will be chosen based on probabilities from the training set.
+    max_labels : int , default : 3
+        The maximum number of labels to predict for each sample.
     """
     def __init__(
         self,
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
+        default_label: Optional[Union[List[str], Literal['Random']]] = 'Random',
         max_labels: int = 3,
     ):
-        super().__init__(openai_key, openai_org, openai_model)
+        super().__init__(openai_key, openai_org, openai_model, default_label)
         if max_labels < 2:
             raise ValueError("max_labels should be at least 2")
+        if isinstance(default_label, str) and default_label != "Random":
+            raise ValueError("default_label should be a list of strings or 'Random'")
         self.max_labels = max_labels
 
     def _extract_labels(self, y) -> List[str]:
@@ -240,33 +264,36 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     def _get_prompt(self, x) -> str:
         return build_zero_shot_prompt_mlc(x, repr(self.classes_), self.max_labels)
 
-    def _predict_single(self, x) -> List[str]:
-        """
-        Predict the class for a single input.
+    def _get_default_label(self):
+        """ Returns the default label based on the default_label argument. """
+        result = []
+        if isinstance(self.default_label, str) and self.default_label == "Random":
+            for cls, probability in zip(self.classes_, self.probabilities_):
+                coin_flip = random.choices([0,1], [1-probability, probability])[0]
+                if coin_flip == 1:
+                    result.append(cls)
+        else:
+            result = self.default_label
 
-        Parameters
-        ----------
-        x : str
-            The input to predict the class of.
-        
-        Returns
-        -------
-        str
-        """
+        return result
+
+    def _predict_single(self, x):
         completion = self._get_chat_completion(x)
         try:
-            labels = extract_json_key(completion.choices[0].message["content"], "label")
+            labels = extract_json_key(completion["choices"][0]["message"]["content"], "label")
             if not isinstance(labels, list):
-                raise RuntimeError("Invalid labels type, expected list")
-        except Exception:
+                labels = labels.split(",")
+                labels = [l.strip() for l in labels]
+        except Exception as e:
+            print(completion)
+            print(f"Could not extract the label from the completion: {str(e)}")
             labels = []
 
         labels = list(filter(lambda l: l in self.classes_, labels))
-
-        if len(labels) > self.max_labels:
-            labels = labels[: self.max_labels - 1]
-        elif len(labels) < 1:
-            labels = [random.choices(self.classes_, self.probabilities_)[0]]
+        if len(labels) == 0:
+            labels = self._get_default_label()
+        if labels is not None and len(labels) > self.max_labels:
+            labels = labels[:self.max_labels - 1]
         return labels
 
     def fit(

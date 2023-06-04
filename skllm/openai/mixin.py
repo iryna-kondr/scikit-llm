@@ -1,5 +1,7 @@
 from typing import Optional
+
 from skllm.config import SKLLMConfig as _Config
+
 
 class OpenAIMixin:
     """

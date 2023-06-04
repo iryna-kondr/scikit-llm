@@ -68,23 +68,20 @@ def get_chat_completion(messages: str, key: str, org: str, model: str="gpt-3.5-t
     )
 
 
-def extract_json_key(json_: str, key: str) -> Any:
-    """
-    Extracts a key from a JSON string.
-    
-    Parameters
-    ----------
-    json_ : str
-        The JSON string to extract the key from.
-    key : str
-        The key to extract.
-    """
-    try:
-        json_ = json_.replace("\n", "")
-        json_ = find_json_in_string(json_)
-        as_json = json.loads(json_)
-        if key not in as_json.keys():
-            raise KeyError("The required key was not found")
-        return as_json[key]
-    except Exception:
-        return None
+
+def extract_json_key(json_, key):
+    original_json = json_
+    for i in range(2):
+        try:
+            json_ = original_json.replace("\n", "")
+            if i == 1:
+                json_ = json_.replace("'", "\"")
+            json_ = find_json_in_string(json_)
+            as_json = json.loads(json_)
+            if key not in as_json.keys():
+                raise KeyError("The required key was not found")
+            return as_json[key]
+        except Exception:
+            if i == 0:
+                continue
+            return None
