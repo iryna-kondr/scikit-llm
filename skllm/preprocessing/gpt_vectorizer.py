@@ -1,14 +1,14 @@
-from sklearn.base import (
-    BaseEstimator as _BaseEstimator,
-    TransformerMixin as _TransformerMixin,
-)
-from typing import Any, Optional, Union, List
-from tqdm import tqdm
+from typing import Any, List, Optional, Union
+
 import numpy as np
-from numpy import ndarray
 import pandas as pd
-from skllm.openai.mixin import OpenAIMixin as _OAIMixin
+from numpy import ndarray
+from sklearn.base import BaseEstimator as _BaseEstimator
+from sklearn.base import TransformerMixin as _TransformerMixin
+from tqdm import tqdm
+
 from skllm.openai.embeddings import get_embedding as _get_embedding
+from skllm.openai.mixin import OpenAIMixin as _OAIMixin
 from skllm.utils import to_numpy as _to_numpy
 
 
