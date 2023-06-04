@@ -1,7 +1,7 @@
 import random
 from abc import ABC, abstractmethod
 from collections import Counter
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional, Union, Literal
 
 import numpy as np
 import pandas as pd
@@ -34,8 +34,6 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
     default_label : Optional[Union[List[str], str]] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
-    random_state : int, default 42
-        A seed to set for pseudo-random functions, primarily random selection.
     """
 
     def __init__(
@@ -44,13 +42,10 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
         default_label: Optional[Union[List[str], str]] = 'Random',
-        random_state: int = 42,
     ):
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
         self.default_label = default_label
-        random.seed(random_state)
-        np.random.seed(random_state)
 
     def _to_np(self, X):
         return _to_numpy(X)
@@ -121,8 +116,6 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     default_label : Optional[str] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
-    random_state : int, default 42
-        A seed to set for pseudo-random functions, primarily random selection.
     """
 
     def __init__(
@@ -131,9 +124,8 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
         default_label: Optional[str] = 'Random',
-        random_state: int = 42,
     ):
-        super().__init__(openai_key, openai_org, openai_model, default_label, random_state)
+        super().__init__(openai_key, openai_org, openai_model, default_label)
 
     def _extract_labels(self, y: Any) -> List[str]:
         if isinstance(y, (pd.Series, np.ndarray)):
@@ -198,24 +190,21 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     openai_model : str , default : "gpt-3.5-turbo"
         The OpenAI model to use. See https://beta.openai.com/docs/api-reference/available-models for a list of
         available models.
-    default_label : Optional[Union[List[str], str]] , default : 'Random'
+    default_label : Optional[Union[List[str], Literal['Random']] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
     max_labels : int , default : 3
         The maximum number of labels to predict for each sample.
-    random_state : int, default 42
-        A seed to set for pseudo-random functions, primarily random selection.
     """
     def __init__(
         self,
         openai_key: Optional[str] = None,
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
-        default_label: Optional[Union[List[str], str]] = 'Random',
+        default_label: Optional[Union[List[str], Literal['Random']]] = 'Random',
         max_labels: int = 3,
-        random_state: int = 42,
     ):
-        super().__init__(openai_key, openai_org, openai_model, default_label, random_state)
+        super().__init__(openai_key, openai_org, openai_model, default_label)
         if max_labels < 2:
             raise ValueError("max_labels should be at least 2")
         if isinstance(default_label, str) and default_label != "Random":
@@ -259,7 +248,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         if len(labels) == 0:
             labels = self._get_default_label()
         if labels is not None and len(labels) > self.max_labels:
-            labels = random.choices(labels, k=self.max_labels)
+            labels = labels[:self.max_labels - 1]
         return labels
 
     def fit(

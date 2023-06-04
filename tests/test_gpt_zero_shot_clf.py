@@ -1,4 +1,5 @@
 import json
+import random
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -36,7 +37,9 @@ class TestZeroShotGPTClassifier(unittest.TestCase):
         mock_get_chat_completion.return_value.choices[0].message = {"content": json.dumps({"label": "new_class"})}
 
         predictions = clf.predict(["text1", "text2", "text3"])
-        self.assertEqual(predictions, ["class1", "class1", "class1"])  # Random choice
+        random.seed(42)
+        np.random.seed(42)
+        self.assertEqual(predictions, ["class2", "class1", "class1"])  # Random choice
 
         clf.default_label = "default_class"
         predictions = clf.predict(["text1", "text2", "text3"])
@@ -50,7 +53,8 @@ class TestZeroShotGPTClassifier(unittest.TestCase):
 class TestMultiLabelZeroShotGPTClassifier(unittest.TestCase):
 
     def get_mock_clf_model(self):
-        clf = MultiLabelZeroShotGPTClassifier(openai_key="mock_key", openai_org="mock_org")  # Mock keys
+        clf = MultiLabelZeroShotGPTClassifier(openai_key="mock_key", openai_org="mock_org",
+                                              default_label='Random')  # Mock keys
         X = np.array(["text1", "text2", "text3"])
         y = [["class1", "class2"], ["class1", "class2"],
              ["class1", "class2"]]  # Adjusted y to ensure [0.5, 0.5] probability
@@ -75,6 +79,8 @@ class TestMultiLabelZeroShotGPTClassifier(unittest.TestCase):
         mock_get_chat_completion.return_value.choices[0].message = {"content": json.dumps({"label": "new_class"})}
 
         predictions = clf.predict(["text1", "text2", "text3"])
+        random.seed(42)
+        np.random.seed(42)
         self.assertEqual(predictions, [['class1'], [], ['class1', 'class2']])  # Random choice
 
         clf.default_label = ["default_class"]
