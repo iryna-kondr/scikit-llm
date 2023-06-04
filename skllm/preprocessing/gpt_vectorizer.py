@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, List, Optional, Union
 
 import numpy as np
@@ -34,7 +36,7 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
         self.openai_embedding_model = openai_embedding_model
         self._set_keys(openai_key, openai_org)
 
-    def fit(self, X: Any = None, y: Any = None, **kwargs) -> "GPTVectorizer":
+    def fit(self, X: Any = None, y: Any = None, **kwargs) -> GPTVectorizer:
         """
         Fit the GPTVectorizer to the data.
         This is modelled to function as the sklearn fit method.
@@ -60,8 +62,8 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
         Parameters
         ----------
-        X : np.ndarray, pd.Series, or list
-            The list of strings to transform into GPT embeddings.
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input array of strings to transform into GPT embeddings.
         
         Returns
         -------
@@ -83,8 +85,8 @@ class GPTVectorizer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
         Parameters
         ----------
-        X : np.ndarray, pd.Series, or list
-            The list of strings to transform into GPT embeddings.
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input array of strings to transform into GPT embeddings.
         y : Any, optional
 
         Returns

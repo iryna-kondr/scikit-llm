@@ -8,14 +8,14 @@ except (ImportError, ModuleNotFoundError):
 _loaded_models = {}
 
 
-def get_chat_completion(messages: str, model: str="ggml-gpt4all-j-v1.3-groovy") -> Dict:
+def get_chat_completion(messages: Dict, model: str="ggml-gpt4all-j-v1.3-groovy") -> Dict:
     """
     Get a chat completion from GPT4All which Format list of message dictionaries into a prompt and call model
     generate on prompt
 
     Parameters
     ----------
-    messages : str
+    messages : Dict
         The messages to use as a prompt for the chat completion.
     model : str
         The model to use for the chat completion. Defaults to "ggml-gpt4all-j-v1.3-groovy".

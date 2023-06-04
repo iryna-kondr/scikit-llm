@@ -27,7 +27,7 @@ def to_numpy(X: Any) -> np.ndarray:
 
 def find_json_in_string(string: str) -> str:
     """
-    Find the first JSON object in a string.
+    Find the JSON object in a string.
     
     Parameters
     ----------

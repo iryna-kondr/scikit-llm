@@ -73,6 +73,18 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
+        """
+        Fits the model by storing the training data and extracting the unique targets.
+        
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input array data to fit the model to.
+
+        y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
+            The target array data to fit the model to.
+        
+        """
         X = self._to_np(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
@@ -307,7 +319,7 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         Parameters
         ----------
         X : Optional[Union[np.ndarray, pd.Series, List[str]]]
-            The input data.
+            Input array data
         y : List[List[str]]
             The labels.
         
