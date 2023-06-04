@@ -34,12 +34,18 @@ def get_chat_completion(messages, key, org, model="gpt-3.5-turbo", max_retries=3
 
 
 def extract_json_key(json_, key):
-    try:
-        json_ = json_.replace("\n", "")
-        json_ = find_json_in_string(json_)
-        as_json = json.loads(json_)
-        if key not in as_json.keys():
-            raise KeyError("The required key was not found")
-        return as_json[key]
-    except Exception:
-        return None
+    original_json = json_
+    for i in range(2):
+        try:
+            json_ = original_json.replace("\n", "")
+            if i == 1:
+                json_ = json_.replace("'", "\"")
+            json_ = find_json_in_string(json_)
+            as_json = json.loads(json_)
+            if key not in as_json.keys():
+                raise KeyError("The required key was not found")
+            return as_json[key]
+        except Exception:
+            if i == 0:
+                continue
+            return None
