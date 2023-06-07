@@ -35,7 +35,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
     """
-
+    
     def __init__(
         self,
         openai_key: Optional[str] = None,
@@ -48,6 +48,19 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         self.default_label = default_label
 
     def _to_np(self, X):
+        """
+        Converts X to a numpy array.
+        
+        Parameters
+        ----------
+        X : Any
+            The input data to convert to a numpy array.
+        
+        Returns
+        -------
+        np.ndarray
+            The input data as a numpy array.
+        """
         return _to_numpy(X)
 
     @abstractmethod
@@ -60,11 +73,35 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
+        """
+        Extracts the target for each datapoint in X.
+        
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input array data to fit the model to.
+
+        y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
+            The target array data to fit the model to.
+        
+        """
         X = self._to_np(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
+        """
+        Predicts the class of each input.
+        
+        Parameters
+        ----------
+        X : Union[np.ndarray, pd.Series, List[str]]
+            The input data to predict the class of.
+        
+        Returns
+        -------
+        List[str]
+        """
         X = self._to_np(X)
         predictions = []
         for i in tqdm(range(len(X))):
@@ -75,7 +112,7 @@ class _BaseZeroShotGPTClassifier(ABC, BaseEstimator, ClassifierMixin, _OAIMixin)
     def _extract_labels(self, y: Any) -> List[str]:
         pass
 
-    def _get_unique_targets(self, y):
+    def _get_unique_targets(self, y:Any):
         labels = self._extract_labels(y)
 
         counts = Counter(labels)
@@ -128,6 +165,17 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         super().__init__(openai_key, openai_org, openai_model, default_label)
 
     def _extract_labels(self, y: Any) -> List[str]:
+        """
+        Return the class labels as a list.
+
+        Parameters
+        ----------
+        y : Any
+        
+        Returns
+        -------
+        List[str]
+        """
         if isinstance(y, (pd.Series, np.ndarray)):
             labels = y.tolist()
         else:
@@ -145,6 +193,9 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
             return self.default_label
 
     def _predict_single(self, x):
+        """
+        Predicts the labels for a single sample.
+        """
         completion = self._get_chat_completion(x)
         try:
             label = str(
@@ -207,6 +258,17 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         self.max_labels = max_labels
 
     def _extract_labels(self, y) -> List[str]:
+        """
+        Extracts the labels into a list.
+
+        Parameters
+        ----------
+        y : Any
+
+        Returns
+        -------
+        List[str]
+        """
         labels = []
         for l in y:
             for j in l:
@@ -231,6 +293,9 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         return result
 
     def _predict_single(self, x):
+        """
+        Predicts the labels for a single sample.
+        """
         completion = self._get_chat_completion(x)
         try:
             labels = extract_json_key(completion["choices"][0]["message"]["content"], "label")
@@ -254,4 +319,15 @@ class MultiLabelZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: List[List[str]],
     ):
+        """
+        Calls the parent fit method on input data.
+        
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            Input array data
+        y : List[List[str]]
+            The labels.
+        
+        """
         return super().fit(X, y)
