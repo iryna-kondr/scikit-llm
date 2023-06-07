@@ -1,4 +1,5 @@
 from typing import Any, List, Optional, Union
+from functools import partial
 
 import numpy as np
 import pandas as pd
@@ -32,20 +33,19 @@ class GPTVectorizer(BaseEstimator, TransformerMixin, OpenAIMixin):
         num_samples = len(X)
         embeddings = []
 
-        def process_batch(batch_texts):
+        def process_texts(texts):
             return get_embedding(
-                batch_texts,
+                texts,
                 self._get_openai_key(),
                 self._get_openai_org(),
                 model=self.openai_embedding_model,
             )
 
-        for i in tqdm(range(0, num_samples, self.batch_size)):
-            batch_texts = X[i : i + self.batch_size]
-            batch_embeddings = Parallel(n_jobs=-1)(
-                delayed(process_batch)(texts) for texts in batch_texts
-            )
-            embeddings.extend(batch_embeddings)
+        with Parallel(n_jobs=-1) as parallel:
+            for i in tqdm(range(0, num_samples, self.batch_size)):
+                batch_texts = X[i: i + self.batch_size]
+                batch_embeddings = parallel(delayed(process_texts)(texts) for texts in batch_texts)
+                embeddings.extend(batch_embeddings)
 
         embeddings = np.asarray(embeddings)
         return embeddings
