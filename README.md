@@ -18,7 +18,7 @@ You can support the project in the following ways:
 
 - ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
 - 🐦 Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
-- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section or [Discord](https://discord.gg/NTaRnRpf)
+- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section or [Discord](https://discord.gg/YDAbwuWK7V)
 - 🔗 Post about Scikit-LLM on LinkedIn or other platforms
 
 ## Documentation 📚
