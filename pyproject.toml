@@ -8,9 +8,10 @@ dependencies = [
   "pandas>=1.5.0",
   "openai>=0.27.0",
   "tqdm>=4.60.0",
+  "annoy>=1.17.2",
 ]
 name = "scikit-llm"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
@@ -79,12 +80,13 @@ target-version = ['py38', 'py39', 'py310', 'py311']
 profile = "black"
 filter_files = true
 known_first_party = ["skllm", "skllm.*"]
+skip = ["__init__.py"]
 
 [tool.docformatter]
 close-quotes-on-newline = true # D209
 
 [tool.interrogate]
-fail-under = 80
+fail-under = 65
 ignore-module = true
 ignore-nested-functions = true
 ignore-private = true

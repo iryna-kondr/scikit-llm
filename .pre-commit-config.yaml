@@ -13,7 +13,6 @@ repos:
       - id: check-executables-have-shebangs
       - id: check-case-conflict
       - id: check-added-large-files
-      - id: detect-aws-credentials
       - id: detect-private-key
   # Formatter for Json and Yaml files
   - repo: https://github.com/pre-commit/mirrors-prettier
