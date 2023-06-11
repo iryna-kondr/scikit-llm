@@ -80,9 +80,7 @@ target-version = ['py38', 'py39', 'py310', 'py311']
 profile = "black"
 filter_files = true
 known_first_party = ["skllm", "skllm.*"]
-
-[tool.isort.excludes]
-paths = ["**/__init__.py"]
+skip = ["__init__.py"]
 
 [tool.docformatter]
 close-quotes-on-newline = true # D209

@@ -62,7 +62,8 @@ ZeroShotGPTClassifier(openai_model="gpt4all::ggml-gpt4all-j-v1.3-groovy")
 
 When running for the first time, the model file will be downloaded automatially.
 
-At the moment only the following estimators support gpt4all as a backend: 
+At the moment only the following estimators support gpt4all as a backend:
+
 - `ZeroShotGPTClassifier`
 - `MultiLabelZeroShotGPTClassifier`
 - `FewShotGPTClassifier`
@@ -178,6 +179,27 @@ While the api remains the same as for the zero shot classifier, there are a few 
 - because of the significantly larger prompt, the inference takes longer and consumes higher amount of tokens.
 
 Note: as the model is not being re-trained, but uses the training data during inference, one could say that this is still a (different) zero-shot approach.
+
+### Dynamic Few-Shot Text Classification
+
+`DynamicFewShotGPTClassifier` dynamically selects N samples per class to include in the prompt. This allows the few-shot classifier to scale to the datasets that are too large for the standard context window of LLMs.
+
+*How does it work?*
+
+During fitting, the whole dataset is partitioned by class, vectorized, and stored.
+
+During inference, the [annoy](https://github.com/spotify/annoy) library is used for fast neighbors lookup which allows to iclude only the most similar examples into the prompt
+
+```python
+from skllm import DynamicFewShotGPTClassifier
+from skllm.datasets import get_classification_dataset
+
+X, y = get_classification_dataset()
+
+clf = DynamicFewShotGPTClassifier(n_examples=3)
+clf.fit(X, y)
+labels = clf.predict(X)
+```
 
 ### Text Vectorization
 
