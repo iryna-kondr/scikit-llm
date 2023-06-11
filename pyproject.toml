@@ -11,7 +11,7 @@ dependencies = [
   "annoy>=1.17.2",
 ]
 name = "scikit-llm"
-version = "0.1.1"
+version = "0.2.0"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
