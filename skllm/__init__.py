@@ -1,4 +1,4 @@
-# ordering is importnat here to prevent circular imports
+# ordering is important here to prevent circular imports
 from skllm.models.gpt_zero_shot_clf import (
     MultiLabelZeroShotGPTClassifier,
     ZeroShotGPTClassifier,
