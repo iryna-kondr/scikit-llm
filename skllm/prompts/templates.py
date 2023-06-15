@@ -61,6 +61,25 @@ Text sample: ```{x}```
 Summarized text:
 """
 
+FOCUSED_SUMMARY_PROMPT_TEMPLATE = """
+As an input you will receive:
+1. A focus parameter delimited with square brackets.
+2. A single text sample delimited with triple backticks.
+
+Perform the following actions:
+1. Determine whether there is something in the text that matches focus. Do not output anything.
+2. Summarise the text in at most {max_words} words.
+3. If possible, make the summarisation focused on the concept provided in the focus parameter. Otherwise, provide a general summarisation. Do not state that general summary is provided.
+4. Do not output anything except of the summary. Do not output any text that was not present in the original text.
+5. If no focused summary possible, or the mentioned concept is not present in the text, output "Mentioned concept is not present in the text." and the general summary. Do not state that general summary is provided.
+
+Focus: [{focus}]
+
+Text sample: ```{x}```
+
+Summarized text:
+"""
+
 TRANSLATION_PROMPT_TEMPLATE = """
 You will be provided with an arbitrary text sample, delimited by triple backticks.
 Your task is to translate this text to {output_language} language and output the translated text.
