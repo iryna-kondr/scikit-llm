@@ -16,6 +16,7 @@ There are several ways you can contribute to this project:
 **Important:** before contributing, we recommend that you open an issue to discuss your planned changes. This allows us to align our goals, provide guidance, and potentially find other contributors interested in collaborating on the same feature or bug fix.
 
 > ### Legal Notice <!-- omit in toc -->
+>
 > When contributing to this project, you must agree that you have authored 100% of the content, that you have the necessary rights to the content and that the content you contribute may be provided under the project license.
 
 ## Development  dependencies
@@ -23,7 +24,7 @@ There are several ways you can contribute to this project:
 In order to install all development dependencies, run the following command:
 
 ```shell
-pip install -e ".[dev]"
+pip install -r requirements-dev.txt
 ```
 
 To ensure that you follow the development workflow, please setup the pre-commit hooks:

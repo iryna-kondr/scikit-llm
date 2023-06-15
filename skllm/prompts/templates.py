@@ -44,7 +44,7 @@ You will be provided with the following information:
 Perform the following tasks:
 1. Identify to which categories the provided text belongs to with the highest probability.
 2. Assign the text sample to at least 1 but up to {max_cats} categories based on the probabilities.
-3. Provide your response in a JSON format containing a single key `label` and a value corresponding to the list of assigned categories. Do not provide any additional information except the JSON.
+3. Provide your response in a JSON format containing a single key `label` and a value corresponding to the array of assigned categories. Do not provide any additional information except the JSON.
 
 List of categories: {labels}
 

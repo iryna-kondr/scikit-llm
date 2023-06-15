@@ -18,14 +18,14 @@ You can support the project in the following ways:
 
 - ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
 - 🐦 Check out our related project - [Falcon AutoML](https://github.com/OKUA1/falcon)
-- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section
+- 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section or [Discord](https://discord.gg/YDAbwuWK7V)
 - 🔗 Post about Scikit-LLM on LinkedIn or other platforms
 
 ## Documentation 📚
 
 ### Configuring OpenAI API Key
 
-At the moment Scikit-LLM is only compatible with some of the OpenAI models. Hence, a user-provided OpenAI API key is required.
+At the moment the majority of the Scikit-LLM estimators are only compatible with some of the OpenAI models. Hence, a user-provided OpenAI API key is required.
 
 ```python
 from skllm.config import SKLLMConfig
@@ -38,6 +38,41 @@ SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 
 - If you have a free trial OpenAI account, the [rate limits](https://platform.openai.com/docs/guides/rate-limits/overview) are not sufficient (specifically 3 requests per minute). Please switch to the "pay as you go" plan first.
 - When calling `SKLLMConfig.set_openai_org`, you have to provide your organization ID and **NOT** the name. You can find your ID [here](https://platform.openai.com/account/org-settings).
+
+### Using GPT4ALL
+
+In addition to OpenAI, some of the models can use [gpt4all](https://gpt4all.io/index.html) as a backend.
+
+**This feature is considered higly experimental!**
+
+In order to use gpt4all, you need to install the corresponding submodule:
+
+```bash
+pip install "scikit-llm[gpt4all]"
+```
+
+In order to switch from OpenAI to GPT4ALL model, simply provide a string of the format `gpt4all::<model_name>` as an argument. While the model runs completely locally, the estimator still treats it as an OpenAI endpoint and will try to check that the API key is present. You can provide any string as a key.
+
+```python
+SKLLMConfig.set_openai_key("any string")
+SKLLMConfig.set_openai_org("any string")
+
+ZeroShotGPTClassifier(openai_model="gpt4all::ggml-gpt4all-j-v1.3-groovy")
+```
+
+When running for the first time, the model file will be downloaded automatially.
+
+At the moment only the following estimators support gpt4all as a backend:
+
+- `ZeroShotGPTClassifier`
+- `MultiLabelZeroShotGPTClassifier`
+- `FewShotGPTClassifier`
+
+When using gpt4all please keep the following in mind:
+
+1. Not all gpt4all models are commercially licensable, please consult gpt4all website for more details.
+2. The accuracy of the models may be much lower compared to ones provided by OpenAI (especially gpt-4).
+3. Not all of the available models were tested, some may not work with scikit-llm at all.
 
 ### Zero-Shot Text Classification
 
@@ -145,6 +180,27 @@ While the api remains the same as for the zero shot classifier, there are a few 
 
 Note: as the model is not being re-trained, but uses the training data during inference, one could say that this is still a (different) zero-shot approach.
 
+### Dynamic Few-Shot Text Classification
+
+`DynamicFewShotGPTClassifier` dynamically selects N samples per class to include in the prompt. This allows the few-shot classifier to scale to datasets that are too large for the standard context window of LLMs.
+
+*How does it work?*
+
+During fitting, the whole dataset is partitioned by class, vectorized, and stored.
+
+During inference, the [annoy](https://github.com/spotify/annoy) library is used for fast neighbor lookup, which allows including only the most similar examples in the prompt.
+
+```python
+from skllm import DynamicFewShotGPTClassifier
+from skllm.datasets import get_classification_dataset
+
+X, y = get_classification_dataset()
+
+clf = DynamicFewShotGPTClassifier(n_examples=3)
+clf.fit(X, y)
+labels = clf.predict(X)
+```
+
 ### Text Vectorization
 
 As an alternative to using GPT as a classifier, it can be used solely for data preprocessing. `GPTVectorizer` allows to embed a chunk of text of arbitrary length to a fixed-dimensional vector, that can be used with virtually any classification or regression model.
@@ -225,17 +281,3 @@ translated_text = t.fit_transform(X)
 - [ ] Open source models
 
 *The order of the elements in the roadmap is arbitrary and does not reflect the planned order of implementation.*
-
-## Contributing
-
-In order to install all development dependencies, run the following command:
-
-```shell
-pip install -e ".[dev]"
-```
-
-To ensure that you follow the development workflow, please setup the pre-commit hooks:
-
-```shell
-pre-commit install
-```
