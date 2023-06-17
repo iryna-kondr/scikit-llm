@@ -248,6 +248,9 @@ summaries = s.fit_transform(X)
 
 Please be aware that the `max_words` hyperparameter sets a soft limit, which is not strictly enforced outside of the prompt. Therefore, in some cases, the actual number of words might be slightly higher.
 
+It is possible to generate a summary, emphasizing a specific concept, by providing an optional parameter `focus`:
+s = GPTSummarizer(openai_model="gpt-3.5-turbo", max_words=15, focus="apples")
+
 ### Text Translation
 
 GPT models have demonstrated their effectiveness in translation tasks by generating accurate translations across various languages. Thus, we added `GPTTranslator` that allows translating an arbitraty text into a language of interest.

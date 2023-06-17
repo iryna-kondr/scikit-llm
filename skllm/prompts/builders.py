@@ -2,6 +2,7 @@ from typing import Union
 
 from skllm.prompts.templates import (
     FEW_SHOT_CLF_PROMPT_TEMPLATE,
+    FOCUSED_SUMMARY_PROMPT_TEMPLATE,
     SUMMARY_PROMPT_TEMPLATE,
     TRANSLATION_PROMPT_TEMPLATE,
     ZERO_SHOT_CLF_PROMPT_TEMPLATE,
@@ -107,6 +108,33 @@ def build_summary_prompt(
         prepared prompt
     """
     return template.format(x=x, max_words=max_words)
+
+
+def build_focused_summary_prompt(
+    x: str,
+    max_words: Union[int, str],
+    focus: Union[int, str],
+    template: str = FOCUSED_SUMMARY_PROMPT_TEMPLATE,
+) -> str:
+    """Builds a prompt for focused text summarization.
+
+    Parameters
+    ----------
+    x : str
+        sample to summarize
+    max_words : Union[int,str]
+        maximum number of words to use in the summary
+    focus : Union[int,str]
+        the topic(s) to focus on
+    template : str
+        prompt template to use, must contain placeholders for all variables, by default FOCUSED_SUMMARY_PROMPT_TEMPLATE
+
+    Returns
+    -------
+    str
+        prepared prompt
+    """
+    return template.format(x=x, max_words=max_words, focus=focus)
 
 
 def build_translation_prompt(
