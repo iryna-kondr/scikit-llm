@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, List, Optional, Union
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -14,24 +14,21 @@ from skllm.openai.mixin import OpenAIMixin as _OAIMixin
 from skllm.utils import to_numpy as _to_numpy
 
 
-class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin): 
-    
+class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
     system_msg = "You are an scikit-learn transformer."
     default_output = "Output is unavailable"
 
     def _get_chat_completion(self, X):
-        """
-        Gets the chat completion for the given input using open ai API.
+        """Gets the chat completion for the given input using open ai API.
 
         Parameters
         ----------
         X : str
             Input string
-        
+
         Returns
         -------
         str
-        
         """
         prompt = self._get_prompt(X)
         msgs = []
@@ -45,10 +42,11 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
         except Exception as e:
             print(f"Skipping a sample due to the following error: {str(e)}")
             return self.default_output
-            
-    def fit(self, X: Any = None, y: Any = None, **kwargs: Any) -> BaseZeroShotGPTTransformer:
-        """
-        Fits the model to the data.
+
+    def fit(
+        self, X: Any = None, y: Any = None, **kwargs: Any
+    ) -> BaseZeroShotGPTTransformer:
+        """Fits the model to the data.
 
         Parameters
         ----------
@@ -60,12 +58,13 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
         -------
         self : BaseZeroShotGPTTransformer
         """
-
         return self
 
-    def transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], **kwargs: Any) -> ndarray:
-        """
-        Converts a list of strings using the open ai API and a predefined prompt.
+    def transform(
+        self, X: np.ndarray | pd.Series | list[str], **kwargs: Any
+    ) -> ndarray:
+        """Converts a list of strings using the open ai API and a predefined
+        prompt.
 
         Parameters
         ----------
@@ -78,16 +77,15 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
         X = _to_numpy(X)
         transformed = []
         for i in tqdm(range(len(X))):
-            transformed.append(
-                self._get_chat_completion(X[i])
-            )
-        transformed = np.asarray(transformed, dtype = object)
+            transformed.append(self._get_chat_completion(X[i]))
+        transformed = np.asarray(transformed, dtype=object)
         return transformed
 
-    def fit_transform(self, X: Optional[Union[np.ndarray, pd.Series, List[str]]], y=None, **fit_params) -> ndarray:
-        """
-        Fits and transforms a list of strings using the transform method.
-        This is modelled to function as the sklearn fit_transform method
+    def fit_transform(
+        self, X: np.ndarray | pd.Series | list[str], y=None, **fit_params
+    ) -> ndarray:
+        """Fits and transforms a list of strings using the transform method.
+        This is modelled to function as the sklearn fit_transform method.
 
         Parameters
         ----------
@@ -95,6 +93,6 @@ class BaseZeroShotGPTTransformer(_BaseEstimator, _TransformerMixin, _OAIMixin):
 
         Returns
         -------
-        ndarray       
+        ndarray
         """
         return self.fit(X, y).transform(X)
