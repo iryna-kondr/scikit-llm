@@ -1,4 +1,8 @@
-from typing import Optional
+from typing import Any, List, Optional, Union
+
+import numpy as np
+from numpy import ndarray
+from pandas import Series
 
 from skllm.openai.base_gpt import BaseZeroShotGPTTransformer as _BaseGPT
 from skllm.prompts.builders import build_translation_prompt
@@ -35,3 +39,11 @@ class GPTTranslator(_BaseGPT):
             translated sample
         """
         return build_translation_prompt(X, self.output_language)
+
+    def transform(self, X: Union[ndarray, Series, List[str]], **kwargs: Any) -> ndarray:
+        y = super().transform(X, **kwargs)
+        y = np.asarray(
+            [i.replace("[Translated text:]", "").replace("```", "").strip() for i in y],
+            dtype=object,
+        )
+        return y
