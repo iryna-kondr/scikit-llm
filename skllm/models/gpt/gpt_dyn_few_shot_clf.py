@@ -3,15 +3,21 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from skllm import FewShotGPTClassifier
 from skllm.memory import AnnoyMemoryIndex
-from skllm.models.gpt_few_shot_clf import _TRAINING_SAMPLE_PROMPT_TEMPLATE
+from skllm.models._base import _BaseZeroShotGPTClassifier
 from skllm.preprocessing import GPTVectorizer
 from skllm.prompts.builders import build_few_shot_prompt_slc
 from skllm.utils import to_numpy
 
+_TRAINING_SAMPLE_PROMPT_TEMPLATE = """
+Sample input:
+```{x}```
 
-class DynamicFewShotGPTClassifier(FewShotGPTClassifier):
+Sample target: {label}
+"""
+
+
+class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
     """Dynamic few-shot single-label classifier.
 
     Parameters

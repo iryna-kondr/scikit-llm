@@ -161,3 +161,4 @@ cython_debug/
 test.py
 tmp.ipynb
 tmp.py
+*.pickle

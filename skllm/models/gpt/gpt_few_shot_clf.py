@@ -3,9 +3,7 @@ from typing import List, Union
 import numpy as np
 import pandas as pd
 
-from skllm.models.gpt_zero_shot_clf import (
-    ZeroShotGPTClassifier as _ZeroShotGPTClassifier,
-)
+from skllm.models._base import _BaseZeroShotGPTClassifier
 from skllm.prompts.builders import build_few_shot_prompt_slc
 from skllm.utils import to_numpy as _to_numpy
 
@@ -17,7 +15,7 @@ Sample target: {label}
 """
 
 
-class FewShotGPTClassifier(_ZeroShotGPTClassifier):
+class FewShotGPTClassifier(_BaseZeroShotGPTClassifier):
     """Few-shot single-label classifier."""
 
     def fit(
