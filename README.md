@@ -87,7 +87,7 @@ When using gpt4all please keep the following in mind:
 2. The accuracy of the models may be much lower compared to ones provided by OpenAI (especially gpt-4).
 3. Not all of the available models were tested, some may not work with scikit-llm at all.
 
-## Supported models by a non-standard backend
+### Supported models by a non-standard backend
 
 At the moment only the following estimators support non-standard backends (gpt4all, azure):
 
@@ -226,8 +226,8 @@ labels = clf.predict(X)
 
 At the moment 3 PaLM based models are available in test mode:
 - `ZeroShotPaLMClassifier` - zero-shot text classification with PaLM 2;
-- `PaLMClassifier` - fine-tuneable text classifier with PaLM 2;
-- `PaLM` - fine-tuneable estimator that can be trained on arbitrary text input-output pairs.
+- `PaLMClassifier` - fine-tunable text classifier with PaLM 2;
+- `PaLM` - fine-tunable estimator that can be trained on arbitrary text input-output pairs.
 
 Example: 
 
