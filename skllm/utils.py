@@ -1,17 +1,18 @@
+import json
+from typing import Any
+
 import numpy as np
 import pandas as pd
 
-from typing import Any
 
 def to_numpy(X: Any) -> np.ndarray:
-    """
-    Converts a pandas Series or list to a numpy array.
+    """Converts a pandas Series or list to a numpy array.
 
     Parameters
     ----------
     X : Any
         The data to convert to a numpy array.
-    
+
     Returns
     -------
     X : np.ndarray
@@ -26,19 +27,17 @@ def to_numpy(X: Any) -> np.ndarray:
 
 
 def find_json_in_string(string: str) -> str:
-    """
-    Finds the JSON object in a string.
-    
+    """Finds the JSON object in a string.
+
     Parameters
     ----------
     string : str
         The string to search for a JSON object.
-    
+
     Returns
     -------
     json_string : str
     """
-
     start = string.find("{")
     end = string.rfind("}")
     if start != -1 and end != -1:
@@ -46,3 +45,28 @@ def find_json_in_string(string: str) -> str:
     else:
         json_string = "{}"
     return json_string
+
+
+def extract_json_key(json_: str, key: str):
+    """Extracts JSON key from a string.
+
+    json_ : str
+        The JSON string to extract the key from.
+    key : str
+        The key to extract.
+    """
+    original_json = json_
+    for i in range(2):
+        try:
+            json_ = original_json.replace("\n", "")
+            if i == 1:
+                json_ = json_.replace("'", '"')
+            json_ = find_json_in_string(json_)
+            as_json = json.loads(json_)
+            if key not in as_json.keys():
+                raise KeyError("The required key was not found")
+            return as_json[key]
+        except Exception:
+            if i == 0:
+                continue
+            return None

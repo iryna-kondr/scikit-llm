@@ -43,6 +43,21 @@ SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 - If you have a free trial OpenAI account, the [rate limits](https://platform.openai.com/docs/guides/rate-limits/overview) are not sufficient (specifically 3 requests per minute). Please switch to the "pay as you go" plan first.
 - When calling `SKLLMConfig.set_openai_org`, you have to provide your organization ID and **NOT** the name. You can find your ID [here](https://platform.openai.com/account/org-settings).
 
+### Using Azure OpenAI
+
+```python
+from skllm.config import SKLLMConfig
+
+SKLLMConfig.set_openai_key("<YOUR_KEY>") #use azure key instead
+SKLLMConfig.set_azure_api_base("<API_BASE>")
+
+# start with "azure::" prefix when setting the model name
+model_name = "azure::<model_name>"
+# e.g. ZeroShotGPTClassifier(openai_model="azure::gpt-3.5-turbo")
+```
+
+Note: Azure OpenAI is not supported by the preprocessors at the moment.
+
 ### Using GPT4ALL
 
 In addition to OpenAI, some of the models can use [gpt4all](https://gpt4all.io/index.html) as a backend.
@@ -66,17 +81,19 @@ ZeroShotGPTClassifier(openai_model="gpt4all::ggml-gpt4all-j-v1.3-groovy")
 
 When running for the first time, the model file will be downloaded automatially.
 
-At the moment only the following estimators support gpt4all as a backend:
-
-- `ZeroShotGPTClassifier`
-- `MultiLabelZeroShotGPTClassifier`
-- `FewShotGPTClassifier`
-
 When using gpt4all please keep the following in mind:
 
 1. Not all gpt4all models are commercially licensable, please consult gpt4all website for more details.
 2. The accuracy of the models may be much lower compared to ones provided by OpenAI (especially gpt-4).
 3. Not all of the available models were tested, some may not work with scikit-llm at all.
+
+## Supported models by a non-standard backend
+
+At the moment only the following estimators support non-standard backends (gpt4all, azure):
+
+- `ZeroShotGPTClassifier`
+- `MultiLabelZeroShotGPTClassifier`
+- `FewShotGPTClassifier`
 
 ### Zero-Shot Text Classification
 
@@ -205,6 +222,28 @@ clf.fit(X, y)
 labels = clf.predict(X)
 ```
 
+### Text Classification with Google PaLM 2
+
+At the moment 3 PaLM based models are available in test mode:
+- `ZeroShotPaLMClassifier` - zero-shot text classification with PaLM 2;
+- `PaLMClassifier` - fine-tuneable text classifier with PaLM 2;
+- `PaLM` - fine-tuneable estimator that can be trained on arbitrary text input-output pairs.
+
+Example: 
+
+```python
+from skllm.models.palm import PaLMClassifier
+from skllm.datasets import get_classification_dataset
+
+X, y = get_classification_dataset()
+
+clf = PaLMClassifier(n_update_steps=100)
+clf.fit(X, y)
+labels = clf.predict(X)
+```
+
+A more detailed documentation will follow soon. For now, please refer to our [official guide on Medium](https://medium.com/@iryna230520).
+
 ### Text Vectorization
 
 As an alternative to using GPT as a classifier, it can be used solely for data preprocessing. `GPTVectorizer` allows to embed a chunk of text of arbitrary length to a fixed-dimensional vector, that can be used with virtually any classification or regression model.
@@ -273,18 +312,3 @@ t = GPTTranslator(openai_model="gpt-3.5-turbo", output_language="English")
 translated_text = t.fit_transform(X)
 ```
 
-## Roadmap 🧭
-
-- [x] Zero-Shot Classification with OpenAI GPT 3/4
-  - [x] Multiclass classification
-  - [x] Multi-label classification
-- [ ] Few-Shot classifier
-  - [x] Multiclass classification
-  - [ ] Multi-label classification
-- [x] GPT Vectorizer
-- [x] ChatGPT models
-- [ ] InstructGPT models
-- [ ] InstructGPT Fine-tuning (optional)
-- [ ] Open source models
-
-*The order of the elements in the roadmap is arbitrary and does not reflect the planned order of implementation.*
