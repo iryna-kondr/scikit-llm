@@ -22,8 +22,8 @@ You can support the project in the following ways:
 
 ## Our Related Projects 🔗
 
-<a href="https://github.com/OKUA1/falcon"><img src="https://raw.githubusercontent.com/gist/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/3cedb53538cb04656cd9d7d07e697e726896ce9f/falcon_light.svg"/></a> <br>
-<a href="https://github.com/OKUA1/agent_dingo"><img src="https://gist.githubusercontent.com/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/1b231aab718fcab624faa33d9c10d0eee17ca160/dingo_light.svg"/></a>
+<a href="https://github.com/OKUA1/agent_dingo"><img src="https://gist.githubusercontent.com/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/1b231aab718fcab624faa33d9c10d0eee17ca160/dingo_light.svg"/></a> <br>
+<a href="https://github.com/OKUA1/falcon"><img src="https://raw.githubusercontent.com/gist/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/3cedb53538cb04656cd9d7d07e697e726896ce9f/falcon_light.svg"/></a>
 
 ## Documentation 📚
 
@@ -242,7 +242,7 @@ clf.fit(X, y)
 labels = clf.predict(X)
 ```
 
-A more detailed documentation will follow soon. For now, please refer to our [official guide on Medium](https://medium.com/@iryna230520).
+A more detailed documentation will follow soon. For now, please refer to our [official guide on Medium](https://medium.com/@iryna230520/fine-tune-google-palm-2-with-scikit-llm-d41b0aa673a5).
 
 ### Text Vectorization
 
