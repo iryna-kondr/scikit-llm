@@ -48,7 +48,7 @@ SKLLMConfig.set_openai_org("<YOUR_ORGANISATION>")
 ```python
 from skllm.config import SKLLMConfig
 
-SKLLMConfig.set_openai_key("<YOUR_KEY>") #use azure key instead
+SKLLMConfig.set_openai_key("<YOUR_KEY>")  # use azure key instead
 SKLLMConfig.set_azure_api_base("<API_BASE>")
 
 # start with "azure::" prefix when setting the model name
@@ -76,7 +76,7 @@ In order to switch from OpenAI to GPT4ALL model, simply provide a string of the 
 SKLLMConfig.set_openai_key("any string")
 SKLLMConfig.set_openai_org("any string")
 
-ZeroShotGPTClassifier(openai_model="gpt4all::ggml-gpt4all-j-v1.3-groovy")
+ZeroShotGPTClassifier(openai_model="gpt4all::ggml-model-gpt4all-falcon-q4_0.bin")
 ```
 
 When running for the first time, the model file will be downloaded automatially.
@@ -225,11 +225,12 @@ labels = clf.predict(X)
 ### Text Classification with Google PaLM 2
 
 At the moment 3 PaLM based models are available in test mode:
+
 - `ZeroShotPaLMClassifier` - zero-shot text classification with PaLM 2;
 - `PaLMClassifier` - fine-tunable text classifier with PaLM 2;
 - `PaLM` - fine-tunable estimator that can be trained on arbitrary text input-output pairs.
 
-Example: 
+Example:
 
 ```python
 from skllm.models.palm import PaLMClassifier
@@ -311,4 +312,3 @@ X = get_translation_dataset()
 t = GPTTranslator(openai_model="gpt-3.5-turbo", output_language="English")
 translated_text = t.fit_transform(X)
 ```
-
