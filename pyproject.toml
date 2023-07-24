@@ -29,7 +29,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-gpt4all = ["gpt4all>=0.2.0"]
+gpt4all = ["gpt4all>=1.0.0"]
 
 [tool.ruff]
 select = [
