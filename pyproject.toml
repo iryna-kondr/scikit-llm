@@ -13,7 +13,7 @@ dependencies = [
   "vertexai<0.1.0"
 ]
 name = "scikit-llm"
-version = "0.3.0"
+version = "0.3.1"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
