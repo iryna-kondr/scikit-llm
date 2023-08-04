@@ -3,7 +3,6 @@ from typing import List, Literal, Optional, Union
 
 import numpy as np
 import pandas as pd
-
 from skllm.models._base import _BaseZeroShotGPTClassifier
 from skllm.prompts.builders import (
     build_zero_shot_prompt_mlc,

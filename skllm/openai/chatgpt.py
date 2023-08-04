@@ -1,7 +1,8 @@
 from time import sleep
 
 import openai
-
+import litellm 
+from litellm import completion
 from skllm.openai.credentials import set_azure_credentials, set_credentials
 
 
@@ -65,7 +66,7 @@ def get_chat_completion(
     error_type = None
     for _ in range(max_retries):
         try:
-            completion = openai.ChatCompletion.create(
+            completion = completion(api_key=key,
                 temperature=0.0, messages=messages, **model_dict
             )
             return completion
