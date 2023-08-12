@@ -9,11 +9,10 @@ dependencies = [
   "openai>=0.27.0",
   "tqdm>=4.60.0",
   "annoy>=1.17.2",
-  "google-cloud-aiplatform>=1.27.0",
-  "vertexai<0.1.0"
+  "google-cloud-aiplatform>=1.27.0"
 ]
 name = "scikit-llm"
-version = "0.3.1"
+version = "0.3.2"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
