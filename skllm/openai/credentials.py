@@ -15,18 +15,24 @@ def set_credentials(key: str, org: str) -> None:
     """
     openai.api_key = key
     openai.organization = org
+    openai.api_type = "open_ai"
+    openai.api_version = None
+    openai.api_base = "https://api.openai.com/v1"
 
 
-def set_azure_credentials(key: str) -> None:
+def set_azure_credentials(key: str, org: str) -> None:
     """Sets OpenAI credentials for Azure.
 
     Parameters
     ----------
     key : str
         The OpenAI (Azure) key to use.
+    org : str
+        The OpenAI (Azure) organization ID to use.
     """
-    openai.api_type = "azure"
+    if not openai.api_type or not openai.api_type.startswith("azure"):
+        openai.api_type = "azure"
     openai.api_key = key
-    openai.organization = None
+    openai.organization = org
     openai.api_base = _Config.get_azure_api_base()
     openai.api_version = _Config.get_azure_api_version()

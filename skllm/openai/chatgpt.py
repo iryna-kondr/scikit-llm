@@ -57,7 +57,7 @@ def get_chat_completion(
         set_credentials(key, org)
         model_dict = {"model": model}
     elif api == "azure":
-        set_azure_credentials(key)
+        set_azure_credentials(key, org)
         model_dict = {"engine": model}
     else:
         raise ValueError("Invalid API")
