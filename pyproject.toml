@@ -12,7 +12,7 @@ dependencies = [
   "google-cloud-aiplatform>=1.27.0"
 ]
 name = "scikit-llm"
-version = "0.3.2"
+version = "0.3.3"
 authors = [
   { name="Oleg Kostromin", email="kostromin97@gmail.com" },
   { name="Iryna Kondrashchenko", email="iryna230520@gmail.com" },
