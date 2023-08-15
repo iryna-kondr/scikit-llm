@@ -2,7 +2,11 @@ import os
 import tempfile
 from typing import Any, List
 
-from annoy import AnnoyIndex
+try:
+    from annoy import AnnoyIndex
+except (ImportError, ModuleNotFoundError):
+    AnnoyIndex = None
+
 from numpy import ndarray
 
 from skllm.memory.base import _BaseMemoryIndex
@@ -20,6 +24,10 @@ class AnnoyMemoryIndex(_BaseMemoryIndex):
     """
 
     def __init__(self, dim: int, metric: str = "euclidean", **kwargs: Any) -> None:
+        if AnnoyIndex is None:
+            raise ImportError(
+                "Annoy is not installed. Please install annoy by running `pip install scikit-llm[annoy]`."
+            )
         self._index = AnnoyIndex(dim, metric)
         self.metric = metric
         self.dim = dim

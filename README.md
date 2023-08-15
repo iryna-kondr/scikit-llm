@@ -203,6 +203,12 @@ Note: as the model is not being re-trained, but uses the training data during in
 
 ### Dynamic Few-Shot Text Classification
 
+*To use this feature, you need to install `annoy` library:*
+
+```bash
+pip install scikit-llm[annoy]
+```
+
 `DynamicFewShotGPTClassifier` dynamically selects N samples per class to include in the prompt. This allows the few-shot classifier to scale to datasets that are too large for the standard context window of LLMs.
 
 *How does it work?*
