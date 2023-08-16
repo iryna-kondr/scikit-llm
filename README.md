@@ -19,7 +19,7 @@ You can support the project in the following ways:
 - ⭐ Star Scikit-LLM on GitHub (click the star button in the top right corner)
 - 💡 Provide your feedback or propose ideas in the [issues](https://github.com/iryna-kondr/scikit-llm/issues) section or [Discord](https://discord.gg/YDAbwuWK7V)
 - 📰 Post about Scikit-LLM on LinkedIn or other platforms
-- 🔗 Check out our related projects (cards below are clickable):
+- 🔗 Check out our other projects (cards below are clickable):
 
 <a href="https://github.com/OKUA1/agent_dingo"><img src="https://gist.githubusercontent.com/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/1b231aab718fcab624faa33d9c10d0eee17ca160/dingo_light.svg"/></a> <br>
 <a href="https://github.com/OKUA1/falcon"><img src="https://raw.githubusercontent.com/gist/OKUA1/6264a95a8abd225c74411a2b707b0242/raw/3cedb53538cb04656cd9d7d07e697e726896ce9f/falcon_light.svg"/></a>
@@ -320,7 +320,7 @@ translated_text = t.fit_transform(X)
 
 ### Citation
 
-You can cite Scikit-LLM using the following BibTeX
+You can cite Scikit-LLM using the following BibTeX:
 
 ```
 @software{ScikitLLM,
