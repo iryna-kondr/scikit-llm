@@ -1,1 +1,1 @@
-from skllm.memory._annoy import AnnoyMemoryIndex
+from skllm.memory._sklearn_nn import SklearnMemoryIndex

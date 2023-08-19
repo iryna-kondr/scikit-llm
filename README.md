@@ -202,12 +202,6 @@ Note: as the model is not being re-trained, but uses the training data during in
 
 ### Dynamic Few-Shot Text Classification
 
-*To use this feature, you need to install `annoy` library:*
-
-```bash
-pip install scikit-llm[annoy]
-```
-
 `DynamicFewShotGPTClassifier` dynamically selects N samples per class to include in the prompt. This allows the few-shot classifier to scale to datasets that are too large for the standard context window of LLMs.
 
 *How does it work?*
@@ -225,6 +219,20 @@ X, y = get_classification_dataset()
 clf = DynamicFewShotGPTClassifier(n_examples=3)
 clf.fit(X, y)
 labels = clf.predict(X)
+```
+
+By default the classifier uses kneighbors algorithm from sklearn, which might be slow for large datasets. In this case, it is possible to switch to [annoy](https://github.com/spotify/annoy):
+
+```bash
+pip install scikit-llm[annoy]
+```
+
+```python
+from skllm.memory._annoy import AnnoyMemoryIndex
+from skllm.memory.base import IndexConstructor
+
+index = IndexConstructor(AnnoyMemoryIndex)
+clf = DynamicFewShotGPTClassifier(memory_index=index)
 ```
 
 ### Text Classification with Google PaLM 2
