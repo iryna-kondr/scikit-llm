@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, List
+from typing import Any, List, Type
 
 from numpy import ndarray
 
@@ -43,3 +43,12 @@ class _BaseMemoryIndex(ABC):
         All build parameters should be passed to the constructor.
         """
         pass
+
+
+class IndexConstructor:
+    def __init__(self, index: Type[_BaseMemoryIndex], **kwargs: Any) -> None:
+        self.index = index
+        self.kwargs = kwargs
+
+    def __call__(self) -> _BaseMemoryIndex:
+        return self.index(**self.kwargs)

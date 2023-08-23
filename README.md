@@ -227,6 +227,20 @@ clf.fit(X, y)
 labels = clf.predict(X)
 ```
 
+By default the classifier uses kneighbors algorithm from sklearn, which might be slow for large datasets. In this case, it is possible to switch to [annoy](https://github.com/spotify/annoy):
+
+```bash
+pip install scikit-llm[annoy]
+```
+
+```python
+from skllm.memory._annoy import AnnoyMemoryIndex
+from skllm.memory.base import IndexConstructor
+
+index = IndexConstructor(AnnoyMemoryIndex)
+clf = DynamicFewShotGPTClassifier(memory_index=index)
+```
+
 ### Text Classification with Google PaLM 2
 
 At the moment 3 PaLM based models are available in test mode:
