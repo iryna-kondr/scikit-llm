@@ -4,3 +4,5 @@ from skllm.models.gpt.gpt_zero_shot_clf import (
     ZeroShotGPTClassifier,
     MultiLabelZeroShotGPTClassifier,
 )
+
+from skllm.models.gpt.gpt import GPTClassifier, GPT

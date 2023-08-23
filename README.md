@@ -202,9 +202,15 @@ Note: as the model is not being re-trained, but uses the training data during in
 
 ### Dynamic Few-Shot Text Classification
 
+_To use this feature, you need to install `annoy` library:_
+
+```bash
+pip install scikit-llm[annoy]
+```
+
 `DynamicFewShotGPTClassifier` dynamically selects N samples per class to include in the prompt. This allows the few-shot classifier to scale to datasets that are too large for the standard context window of LLMs.
 
-*How does it work?*
+_How does it work?_
 
 During fitting, the whole dataset is partitioned by class, vectorized, and stored.
 
@@ -286,6 +292,67 @@ steps = [("GPT", GPTVectorizer()), ("Clf", XGBClassifier())]
 clf = Pipeline(steps)
 clf.fit(X_train, y_train_encoded)
 yh = clf.predict(X_test)
+```
+
+### LLM Fine-Tuning
+
+At the moment the following scenarios are supported for tuning:
+
+- **Text classification**: the model is fine-tuned to predict a single label per sample. The following estimators are supported:
+  - `skllm.models.palm.PaLMClassifier`
+  - `skllm.models.gpt.GPTClassifier`
+- **Text to text**: the model is fine-tuned on arbitrary text input-output pairs. The following estimators are supported:
+  - `skllm.models.palm.PaLM`
+  - `skllm.models.gpt.GPT`
+
+Example 1: Fine-tuning a PaLM model for text classification
+
+```python
+from skllm.models.palm import PaLMClassifier
+clf = PaLMClassifier(n_update_steps=100)
+clf.fit(X_train, y_train) # y_train is a list of labels
+labels = clf.predict(X_test)
+```
+
+Example 2: Fine-tuning a PaLM model for text to text tasks
+
+```python
+from skllm.models.palm import PaLM
+clf = PaLM(n_update_steps=100)
+clf.fit(X_train, y_train) # y_train is any desired output text
+labels = clf.predict(X_test)
+```
+
+_Note:_ PaLM models tuning requires a Vertex AI account. Please refer to our [official guide on Medium](https://medium.com/@iryna230520/fine-tune-google-palm-2-with-scikit-llm-d41b0aa673a5) for more details.
+
+Example 3: Fine-tuning a GPT model for text classification
+
+```python
+from skllm.models.gpt import GPTClassifier
+
+clf = GPTClassifier(
+        base_model = "gpt-3.5-turbo-0613",
+        n_epochs = None, # int or None. When None, will be determined automatically by OpenAI
+        default_label = "Random", # optional
+)
+
+clf.fit(X_train, y_train) # y_train is a list of labels
+labels = clf.predict(X_test)
+```
+
+Example 4: Fine-tuning a GPT model for text to text tasks
+
+```python
+from skllm.models.gpt import GPTC
+
+clf = GPT(
+        base_model = "gpt-3.5-turbo-0613",
+        n_epochs = None, # int or None. When None, will be determined automatically by OpenAI
+        system_msg = "You are a text processing model."
+)
+
+clf.fit(X_train, y_train) # y_train is any desired output text
+labels = clf.predict(X_test)
 ```
 
 ### Text Summarization
