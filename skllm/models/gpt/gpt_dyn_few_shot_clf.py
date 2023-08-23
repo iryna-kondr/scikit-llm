@@ -3,7 +3,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from skllm.memory import AnnoyMemoryIndex
+from skllm.memory import SklearnMemoryIndex
+from skllm.memory.base import IndexConstructor
 from skllm.models._base import _BaseZeroShotGPTClassifier
 from skllm.preprocessing import GPTVectorizer
 from skllm.prompts.builders import build_few_shot_prompt_slc
@@ -35,6 +36,8 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
     default_label : Optional[Union[List[str], str]] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
+    memory_index : Optional[IndexConstructor], default : None
+        The memory index constructor to use. If None, a SklearnMemoryIndex will be used.
     """
 
     def __init__(
@@ -44,9 +47,11 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_org: str | None = None,
         openai_model: str = "gpt-3.5-turbo",
         default_label: str | None = "Random",
+        memory_index: IndexConstructor | None = None,
     ):
         super().__init__(openai_key, openai_org, openai_model, default_label)
         self.n_examples = n_examples
+        self.memory_index = memory_index
 
     def fit(
         self,
@@ -79,9 +84,13 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
             partition = X[y == cls]
             self.data_[cls]["partition"] = partition
             embeddings = self.embedding_model_.transform(partition)
-            index = AnnoyMemoryIndex(embeddings.shape[1])
-            for i, embedding in enumerate(embeddings):
-                index.add(i, embedding)
+            if self.memory_index is not None:
+                index = self.memory_index()
+                index.dim = embeddings.shape[1]
+            else:
+                index = SklearnMemoryIndex(embeddings.shape[1])
+            for embedding in embeddings:
+                index.add(embedding)
             index.build()
             self.data_[cls]["index"] = index
 

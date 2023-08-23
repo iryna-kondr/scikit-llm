@@ -23,35 +23,43 @@ class AnnoyMemoryIndex(_BaseMemoryIndex):
         metric to use, by default "euclidean"
     """
 
-    def __init__(self, dim: int, metric: str = "euclidean", **kwargs: Any) -> None:
+    def __init__(self, dim: int = -1, metric: str = "euclidean", **kwargs: Any) -> None:
         if AnnoyIndex is None:
             raise ImportError(
-                "Annoy is not installed. Please install annoy by running `pip install scikit-llm[annoy]`."
+                "Annoy is not installed. Please install annoy by running `pip install"
+                " scikit-llm[annoy]`."
             )
-        self._index = AnnoyIndex(dim, metric)
         self.metric = metric
         self.dim = dim
         self.built = False
+        self._index = None
+        self._counter = 0
 
-    def add(self, id: int, vector: ndarray) -> None:
+    def add(self, vector: ndarray) -> None:
         """Adds a vector to the index.
 
         Parameters
         ----------
-        id : Any
-            identifier for the vector
         vector : ndarray
             vector to add to the index
         """
         if self.built:
             raise RuntimeError("Cannot add vectors after index is built.")
+        if self.dim < 0:
+            raise ValueError("Dimensionality must be positive.")
+        if not self._index:
+            self._index = AnnoyIndex(self.dim, self.metric)
+        id = self._counter
         self._index.add_item(id, vector)
+        self._counter += 1
 
     def build(self) -> None:
         """Builds the index.
 
         No new vectors can be added after building.
         """
+        if self.dim < 0:
+            raise ValueError("Dimensionality must be positive.")
         self._index.build(-1)
         self.built = True
 
@@ -70,6 +78,7 @@ class AnnoyMemoryIndex(_BaseMemoryIndex):
         List
             ids of retrieved nearest neighbors
         """
+        print("ANNOY RETRIEVE")
         if not self.built:
             raise RuntimeError("Cannot retrieve vectors before the index is built.")
         return [
