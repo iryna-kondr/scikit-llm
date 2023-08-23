@@ -343,7 +343,7 @@ labels = clf.predict(X_test)
 Example 4: Fine-tuning a GPT model for text to text tasks
 
 ```python
-from skllm.models.gpt import GPTC
+from skllm.models.gpt import GPT
 
 clf = GPT(
         base_model = "gpt-3.5-turbo-0613",
