@@ -149,6 +149,10 @@ class GPT(_BaseZeroShotGPTClassifier, _Tunable):
     def _build_label(self, label: str):
         return label
 
+    def _predict_single(self, x):
+        completion = self._get_chat_completion(x)
+        return completion["choices"][0]["message"]["content"]
+
     def fit(
         self,
         X: Union[np.ndarray, pd.Series, List[str]],
