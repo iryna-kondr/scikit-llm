@@ -1,12 +1,24 @@
-from typing import Optional, Union, List
-import pandas as pd
-from skllm.models._base import _BaseZeroShotGPTClassifier
-from skllm.prompts.builders import build_zero_shot_prompt_slc
-from skllm.openai.credentials import set_credentials
-from skllm.openai.tuning import create_tuning_job, await_results, delete_file
-import numpy as np
 import json
 import uuid
+from typing import List, Optional, Union
+
+import numpy as np
+import pandas as pd
+
+from skllm.models._base import _BaseZeroShotGPTClassifier
+from skllm.openai.credentials import set_credentials
+from skllm.openai.tuning import await_results, create_tuning_job, delete_file
+from skllm.prompts.builders import (
+    build_zero_shot_prompt_mlc,
+    build_zero_shot_prompt_slc,
+)
+
+_TRAINING_SAMPLE_PROMPT_TEMPLATE = """
+Sample input:
+```{x}```
+
+Sample target: {label}
+"""
 
 
 def _build_clf_example(
@@ -66,10 +78,19 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         openai_org: Optional[str] = None,
         n_epochs: Optional[int] = None,
         custom_suffix: Optional[str] = "skllm",
+        is_multi_label: Optional[bool] = False,
+        max_labels: int = 3,
     ):
         self.base_model = base_model
         self.n_epochs = n_epochs
         self.custom_suffix = custom_suffix
+        self.is_multi_label = is_multi_label
+        if max_labels < 2:
+            raise ValueError("max_labels should be at least 2")
+        if isinstance(default_label, str) and default_label != "Random":
+            raise ValueError("default_label should be a list of strings or 'Random'")
+        self.max_labels = max_labels
+
         if base_model not in self.supported_models:
             raise ValueError(
                 f"Model {base_model} is not supported. Supported models are"
@@ -83,7 +104,67 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         )
 
     def _get_prompt(self, x: str) -> str:
-        return build_zero_shot_prompt_slc(x, repr(self.classes_))
+        """Generates the prompt for the given input.
+
+        Parameters
+        ----------
+        x : str
+            sample
+
+        Returns
+        -------
+        str
+            final prompt
+        """
+        if self.is_multi_label:
+            return build_zero_shot_prompt_mlc(
+                x=x,
+                labels=repr(self.classes_),
+                max_cats=self.max_labels,
+            )
+        else:
+            return build_zero_shot_prompt_slc(x, repr(self.classes_))
+
+    def _extract_labels(self, y) -> List[str]:
+        """Extracts the labels into a list.
+
+        Parameters
+        ----------
+        y : Any
+
+        Returns
+        -------
+        List[str]
+        """
+        if self.is_multi_label:
+            labels = []
+            for l in y:
+                for j in l:
+                    labels.append(j)
+            return labels
+        else:
+            labels = super()._extract_labels(y)
+
+    def _multi_label_fit(
+        self,
+        X: Union[np.ndarray, pd.Series, List[str]],
+        y: List[List[str]],
+    ):
+        """Extracts the target for each datapoint in X.
+
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            The input array data to fit the model to.
+
+        y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
+            The target array data to fit the model to.
+        """
+        X = self._to_np(X)
+        y = self._to_np(y)
+
+        self.classes_, self.probabilities_ = self._get_unique_targets(y)
+        return self
 
     def fit(
         self,
