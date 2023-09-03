@@ -121,7 +121,7 @@ Additionally, Scikit-LLM will ensure that the obtained response contains a valid
 
 Example 2: Training without labeled data
 
-Since the training data is not strictly required, it can be fully ommited. The only thing that has to be provided is the list of candidate labels.
+Since the training data is not strictly required, it can be fully omitted. The only thing that has to be provided is the list of candidate labels.
 
 ```python
 from skllm import ZeroShotGPTClassifier
