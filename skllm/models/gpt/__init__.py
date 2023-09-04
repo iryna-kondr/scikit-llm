@@ -8,4 +8,4 @@ from skllm.models.gpt.gpt_zero_shot_clf import (
     MultiLabelZeroShotGPTClassifier,
 )
 
-from skllm.models.gpt.gpt import GPTClassifier, GPT
+from skllm.models.gpt.gpt import GPTClassifier, GPT, MultiLabelGPTClassifier

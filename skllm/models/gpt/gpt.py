@@ -78,13 +78,69 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         openai_org: Optional[str] = None,
         n_epochs: Optional[int] = None,
         custom_suffix: Optional[str] = "skllm",
-        is_multi_label: Optional[bool] = False,
+    ):
+        self.base_model = base_model
+        self.n_epochs = n_epochs
+        self.custom_suffix = custom_suffix
+        if base_model not in self.supported_models:
+            raise ValueError(
+                f"Model {base_model} is not supported. Supported models are"
+                f" {self.supported_models}"
+            )
+        super().__init__(
+            openai_model="undefined",
+            default_label=default_label,
+            openai_key=openai_key,
+            openai_org=openai_org,
+        )
+
+    def _get_prompt(self, x: str) -> str:
+        return build_zero_shot_prompt_slc(x, repr(self.classes_))
+
+    def fit(
+        self,
+        X: Union[np.ndarray, pd.Series, List[str]],
+        y: Union[np.ndarray, pd.Series, List[str]],
+    ):
+        """Fits the model to the given data.
+
+        Parameters
+        ----------
+        X : Union[np.ndarray, pd.Series, List[str]]
+            training data
+        y : Union[np.ndarray, pd.Series, List[str]]
+            training labels
+
+        Returns
+        -------
+        GPTClassifier
+            self
+        """
+        X = self._to_np(X)
+        y = self._to_np(y)
+        super().fit(X, y)
+        self._tune(X, y)
+        return self
+
+
+class MultiLabelGPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
+    """Fine-tunable GPT classifier for multi-label classification."""
+
+    supported_models = ["gpt-3.5-turbo-0613"]
+
+    def __init__(
+        self,
+        base_model: str = "gpt-3.5-turbo-0613",
+        default_label: Optional[str] = "Random",
+        openai_key: Optional[str] = None,
+        openai_org: Optional[str] = None,
+        n_epochs: Optional[int] = None,
+        custom_suffix: Optional[str] = "skllm",
         max_labels: int = 3,
     ):
         self.base_model = base_model
         self.n_epochs = n_epochs
         self.custom_suffix = custom_suffix
-        self.is_multi_label = is_multi_label
         if max_labels < 2:
             raise ValueError("max_labels should be at least 2")
         if isinstance(default_label, str) and default_label != "Random":
@@ -116,14 +172,11 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         str
             final prompt
         """
-        if self.is_multi_label:
-            return build_zero_shot_prompt_mlc(
-                x=x,
-                labels=repr(self.classes_),
-                max_cats=self.max_labels,
-            )
-        else:
-            return build_zero_shot_prompt_slc(x, repr(self.classes_))
+        return build_zero_shot_prompt_mlc(
+            x=x,
+            labels=repr(self.classes_),
+            max_cats=self.max_labels,
+        )
 
     def _extract_labels(self, y) -> List[str]:
         """Extracts the labels into a list.
@@ -136,40 +189,16 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         -------
         List[str]
         """
-        if self.is_multi_label:
-            labels = []
-            for l in y:
-                for j in l:
-                    labels.append(j)
-            return labels
-        else:
-            labels = super()._extract_labels(y)
-
-    def _multi_label_fit(
-        self,
-        X: Union[np.ndarray, pd.Series, List[str]],
-        y: List[List[str]],
-    ):
-        """Extracts the target for each datapoint in X.
-
-        Parameters
-        ----------
-        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
-            The input array data to fit the model to.
-
-        y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
-            The target array data to fit the model to.
-        """
-        X = self._to_np(X)
-        y = self._to_np(y)
-
-        self.classes_, self.probabilities_ = self._get_unique_targets(y)
-        return self
+        labels = []
+        for l in y:
+            for j in l:
+                labels.append(j)
+        return labels
 
     def fit(
         self,
         X: Union[np.ndarray, pd.Series, List[str]],
-        y: Union[np.ndarray, pd.Series, List[str]],
+        y: List[List[str]],
     ):
         """Fits the model to the given data.
 
@@ -177,12 +206,12 @@ class GPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         ----------
         X : Union[np.ndarray, pd.Series, List[str]]
             training data
-        y : Union[np.ndarray, pd.Series, List[str]]
+        y : List[List[str]]
             training labels
 
         Returns
         -------
-        GPTClassifier
+        MultiLabelGPTClassifier
             self
         """
         X = self._to_np(X)
