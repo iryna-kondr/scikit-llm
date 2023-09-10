@@ -13,6 +13,8 @@ from skllm.prompts.builders import (
     build_zero_shot_prompt_slc,
 )
 
+from skllm.utils import extract_json_key
+
 _TRAINING_SAMPLE_PROMPT_TEMPLATE = """
 Sample input:
 ```{x}```
@@ -193,6 +195,28 @@ class MultiLabelGPTClassifier(_BaseZeroShotGPTClassifier, _Tunable):
         for l in y:
             for j in l:
                 labels.append(j)
+        return labels
+
+    def _predict_single(self, x):
+        """Predicts the labels for a single sample."""
+        completion = self._get_chat_completion(x)
+        try:
+            labels = extract_json_key(
+                completion["choices"][0]["message"]["content"], "label"
+            )
+            if not isinstance(labels, list):
+                labels = labels.split(",")
+                labels = [l.strip() for l in labels]
+        except Exception as e:
+            print(completion)
+            print(f"Could not extract the label from the completion: {str(e)}")
+            labels = []
+
+        labels = list(filter(lambda l: l in self.classes_, labels))
+        if len(labels) == 0:
+            labels = self._get_default_label()
+        if labels is not None and len(labels) > self.max_labels:
+            labels = labels[: self.max_labels - 1]
         return labels
 
     def fit(
