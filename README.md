@@ -200,6 +200,21 @@ While the api remains the same as for the zero shot classifier, there are a few 
 
 Note: as the model is not being re-trained, but uses the training data during inference, one could say that this is still a (different) zero-shot approach.
 
+### Multi-Label Few-Shot Text Classification
+
+Example:
+
+```python
+from skllm.models.gpt.gpt_few_shot_clf import MultiLabelFewShotGPTClassifier
+from skllm.datasets import get_multilabel_classification_dataset
+
+X, y = get_multilabel_classification_dataset()
+
+clf = MultiLabelFewShotGPTClassifier(max_labels=2, openai_model="gpt-3.5-turbo")
+clf.fit(X, y)
+labels = clf.predict(X)
+```
+
 ### Dynamic Few-Shot Text Classification
 
 _To use this feature, you need to install `annoy` library:_
@@ -340,7 +355,23 @@ clf.fit(X_train, y_train) # y_train is a list of labels
 labels = clf.predict(X_test)
 ```
 
-Example 4: Fine-tuning a GPT model for text to text tasks
+Example 4: Fine-tuning a GPT model for multi-label text classification
+
+```python
+from skllm.models.gpt import MultiLabelGPTClassifier
+
+clf = MultiLabelGPTClassifier(
+    base_model = "gpt-3.5-turbo-0613",
+    n_epochs = None,  # int or None. When None, will be determined automatically by OpenAI
+    default_label = "Random",  # optional
+    max_labels = 2,
+)
+
+clf.fit(X_train, y_train)
+labels = clf.predict(X_test)
+```
+
+Example 5: Fine-tuning a GPT model for text to text tasks
 
 ```python
 from skllm.models.gpt import GPT
