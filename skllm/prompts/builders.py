@@ -2,6 +2,7 @@ from typing import Union
 
 from skllm.prompts.templates import (
     FEW_SHOT_CLF_PROMPT_TEMPLATE,
+    FEW_SHOT_MLCLF_PROMPT_TEMPLATE,
     FOCUSED_SUMMARY_PROMPT_TEMPLATE,
     SUMMARY_PROMPT_TEMPLATE,
     TRANSLATION_PROMPT_TEMPLATE,
@@ -59,6 +60,38 @@ def build_few_shot_prompt_slc(
         prepared prompt
     """
     return template.format(x=x, labels=labels, training_data=training_data)
+
+
+def build_few_shot_prompt_mlc(
+    x: str,
+    labels: str,
+    training_data: str,
+    max_cats: Union[int, str],
+    template: str = FEW_SHOT_MLCLF_PROMPT_TEMPLATE,
+) -> str:
+    """Builds a prompt for few-shot single-label classification.
+
+    Parameters
+    ----------
+    x : str
+        sample to classify
+    labels : str
+        candidate labels in a list-like representation
+    max_cats : Union[int,str]
+        maximum number of categories to assign
+    training_data : str
+        training data to be used for few-shot learning
+    template : str
+        prompt template to use, must contain placeholders for all variables, by default ZERO_SHOT_CLF_PROMPT_TEMPLATE
+
+    Returns
+    -------
+    str
+        prepared prompt
+    """
+    return template.format(
+        x=x, labels=labels, training_data=training_data, max_cats=max_cats
+    )
 
 
 def build_zero_shot_prompt_mlc(
