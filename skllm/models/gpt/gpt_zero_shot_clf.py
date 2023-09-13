@@ -28,6 +28,9 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
     default_label : Optional[str] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
+    prompt_template: str , A formattable string with the following placeholders: {x} - the sample to classify, {labels} - the list of labels.
+        If None, the default prompt template will be used.
+
     """
 
     def __init__(
@@ -36,11 +39,17 @@ class ZeroShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
         default_label: Optional[str] = "Random",
+        prompt_template: Optional[str] = None,
     ):
         super().__init__(openai_key, openai_org, openai_model, default_label)
+        self.prompt_template = prompt_template
 
     def _get_prompt(self, x) -> str:
-        return build_zero_shot_prompt_slc(x, repr(self.classes_))
+        if self.prompt_template is None:
+            return build_zero_shot_prompt_slc(x, repr(self.classes_))
+        return build_zero_shot_prompt_slc(
+            x, repr(self.classes_), template=self.prompt_template
+        )
 
     def fit(
         self,

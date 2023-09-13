@@ -45,6 +45,18 @@ class FewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
+    def _get_prompt_template(self) -> str:
+        """Returns the prompt template to use.
+
+        Returns
+        -------
+        str
+            prompt template
+        """
+        if self.prompt_template is None:
+            return _TRAINING_SAMPLE_PROMPT_TEMPLATE
+        return self.prompt_template
+
     def _get_prompt(self, x: str) -> str:
         """Generates the prompt for the given input.
 
@@ -58,10 +70,11 @@ class FewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         str
             final prompt
         """
+        prompt_template = self._get_prompt_template()
         training_data = []
         for xt, yt in zip(*self.training_data_):
             training_data.append(
-                _TRAINING_SAMPLE_PROMPT_TEMPLATE.format(x=xt, label=yt)
+                prompt_template.format(x=xt, label=yt)
             )
 
         training_data_str = "\n".join(training_data)

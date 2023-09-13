@@ -130,6 +130,8 @@ class _BaseZeroShotGPTClassifier(BaseClassifier, _OAIMixin):
     default_label : Optional[Union[List[str], str]] , default : 'Random'
         The default label to use if the LLM could not generate a response for a sample. If set to 'Random' a random
         label will be chosen based on probabilities from the training set.
+    prompt_template: str , A formattable string with the following placeholders: {x} - the sample to classify, {labels} - the list of labels.
+        If None, the default prompt template will be used.
     """
 
     def __init__(
@@ -138,10 +140,12 @@ class _BaseZeroShotGPTClassifier(BaseClassifier, _OAIMixin):
         openai_org: Optional[str] = None,
         openai_model: str = "gpt-3.5-turbo",
         default_label: Optional[Union[List[str], str]] = "Random",
+        prompt_template: Optional[str] = None,
     ):
         self._set_keys(openai_key, openai_org)
         self.openai_model = openai_model
         self.default_label = default_label
+        self.prompt_template = prompt_template
 
     @abstractmethod
     def _get_prompt(self, x: str) -> str:
