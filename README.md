@@ -26,6 +26,8 @@ You can support the project in the following ways:
 
 ## Documentation 📚
 
+**Notice for contributors:**: We are currently preparing the transition to v.1.0 which will include major code restructuring. Until then, no new pull requests to the main branch will be approved unless discussed in advance via issues or in Discord !
+
 ### Configuring OpenAI API Key
 
 At the moment the majority of the Scikit-LLM estimators are only compatible with some of the OpenAI models. Hence, a user-provided OpenAI API key is required.
