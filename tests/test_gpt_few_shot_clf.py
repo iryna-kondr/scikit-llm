@@ -5,8 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from skllm.models.gpt_dyn_few_shot_clf import DynamicFewShotGPTClassifier
-from skllm.models.gpt_few_shot_clf import FewShotGPTClassifier
+from skllm import DynamicFewShotGPTClassifier, FewShotGPTClassifier
 
 
 class TestFewShotGPTClassifier(unittest.TestCase):

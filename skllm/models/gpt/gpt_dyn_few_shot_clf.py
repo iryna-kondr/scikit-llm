@@ -38,6 +38,8 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         label will be chosen based on probabilities from the training set.
     memory_index : Optional[IndexConstructor], default : None
         The memory index constructor to use. If None, a SklearnMemoryIndex will be used.
+    prompt_template: str , A formattable string with the following placeholders: {x} - the sample to classify, {labels} - the list of labels.
+        If None, the default prompt template will be used.
     """
 
     def __init__(
@@ -48,10 +50,12 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         openai_model: str = "gpt-3.5-turbo",
         default_label: str | None = "Random",
         memory_index: IndexConstructor | None = None,
+        prompt_template: str | None = None,
     ):
         super().__init__(openai_key, openai_org, openai_model, default_label)
         self.n_examples = n_examples
         self.memory_index = memory_index
+        self.prompt_template = prompt_template
 
     def fit(
         self,
@@ -96,6 +100,18 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
 
         return self
 
+    def _get_prompt_template(self) -> str:
+        """Returns the prompt template to use.
+
+        Returns
+        -------
+        str
+            prompt template
+        """
+        if self.prompt_template is None:
+            return _TRAINING_SAMPLE_PROMPT_TEMPLATE
+        return self.prompt_template
+
     def _get_prompt(self, x: str) -> str:
         """Generates the prompt for the given input.
 
@@ -109,6 +125,7 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
         str
             final prompt
         """
+        prompt_template = self._get_prompt_template()
         embedding = self.embedding_model_.transform([x])
         training_data = []
         for cls in self.classes_:
@@ -118,7 +135,7 @@ class DynamicFewShotGPTClassifier(_BaseZeroShotGPTClassifier):
             neighbors = [partition[i] for i in neighbors[0]]
             training_data.extend(
                 [
-                    _TRAINING_SAMPLE_PROMPT_TEMPLATE.format(x=neighbor, label=cls)
+                    prompt_template.format(x=neighbor, label=cls)
                     for neighbor in neighbors
                 ]
             )

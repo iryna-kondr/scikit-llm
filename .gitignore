@@ -162,3 +162,6 @@ test.py
 tmp.ipynb
 tmp.py
 *.pickle
+
+# vscode
+.vscode/

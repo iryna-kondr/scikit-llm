@@ -1,15 +1,11 @@
 import unittest
 from unittest.mock import patch
 
-from skllm.openai.chatgpt import (
-    construct_message,
-    extract_json_key,
-    get_chat_completion,
-)
+from skllm.openai.chatgpt import construct_message, get_chat_completion
+from skllm.utils import extract_json_key
 
 
 class TestChatGPT(unittest.TestCase):
-
     @patch("skllm.openai.credentials.set_credentials")
     @patch("openai.ChatCompletion.create")
     def test_get_chat_completion(self, mock_create, mock_set_credentials):
@@ -21,9 +17,18 @@ class TestChatGPT(unittest.TestCase):
 
         result = get_chat_completion(messages, key, org, model)
 
-        self.assertTrue(mock_set_credentials.call_count <= 1, "set_credentials should be called at most once")
-        self.assertEqual(mock_create.call_count, 2, "ChatCompletion.create should be called twice due to an exception "
-                                                    "on the first call")
+        self.assertTrue(
+            mock_set_credentials.call_count <= 1,
+            "set_credentials should be called at most once",
+        )
+        self.assertEqual(
+            mock_create.call_count,
+            2,
+            (
+                "ChatCompletion.create should be called twice due to an exception "
+                "on the first call"
+            ),
+        )
         self.assertEqual(result, "success")
 
     def test_construct_message(self):
@@ -45,5 +50,5 @@ class TestChatGPT(unittest.TestCase):
         self.assertEqual(result_with_invalid_key, None)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

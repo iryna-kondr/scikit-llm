@@ -5,10 +5,7 @@ from unittest.mock import MagicMock, patch
 
 import numpy as np
 
-from skllm.models.gpt_zero_shot_clf import (
-    MultiLabelZeroShotGPTClassifier,
-    ZeroShotGPTClassifier,
-)
+from skllm import MultiLabelZeroShotGPTClassifier, ZeroShotGPTClassifier
 
 
 def _get_ret(label):
