@@ -4,6 +4,8 @@ Welcome! We appreciate your interest in contributing to Scikit-LLM. Whether you'
 
 ## How Can I Contribute?
 
+**IMPORTANT:** We are currently preparing the transition to v.1.0 which will include major code restructuring. Until then, no new pull requests to the main branch will be approved unless discussed in advance via issues or in Discord !
+
 There are several ways you can contribute to this project:
 
 - Bug Fixes: Help us identify and fix issues in the codebase.
