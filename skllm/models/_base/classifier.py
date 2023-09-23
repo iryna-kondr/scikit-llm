@@ -19,6 +19,8 @@ from skllm.prompts.templates import (
     ZERO_SHOT_MLCLF_PROMPT_TEMPLATE,
     FEW_SHOT_CLF_PROMPT_TEMPLATE,
     FEW_SHOT_MLCLF_PROMPT_TEMPLATE,
+    ZERO_SHOT_CLF_SHORT_PROMPT_TEMPLATE,
+    ZERO_SHOT_MLCLF_SHORT_PROMPT_TEMPLATE,
 )
 from skllm.prompts.builders import (
     build_zero_shot_prompt_slc,
@@ -134,7 +136,7 @@ class MultiLabelMixin:
 class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
     def __init__(
         self,
-        model: str,
+        model: Optional[str],  # model can initially be None for tunable estimators
         default_label: str = "Random",
         max_labels: Optional[int] = 5,
         prompt_template: Optional[str] = None,
@@ -452,3 +454,26 @@ class BaseTunableClassifier(BaseClassifier):
         super().fit(X, y)
         self._tune(X, y)
         return self
+
+    def _get_prompt_template(self) -> str:
+        """Returns the prompt template to use for a single input."""
+        if self.prompt_template is not None:
+            return self.prompt_template
+        elif isinstance(self, SingleLabelMixin):
+            return ZERO_SHOT_CLF_SHORT_PROMPT_TEMPLATE
+        return ZERO_SHOT_MLCLF_SHORT_PROMPT_TEMPLATE
+
+    def _get_prompt(self, x: str) -> dict:
+        """Returns the prompt to use for a single input."""
+        if isinstance(self, SingleLabelMixin):
+            prompt = build_zero_shot_prompt_slc(
+                x, repr(self.classes_), template=self._get_prompt_template()
+            )
+        else:
+            prompt = build_zero_shot_prompt_mlc(
+                x,
+                repr(self.classes_),
+                self.max_labels,
+                template=self._get_prompt_template(),
+            )
+        return {"messages": prompt, "system_message": "You are a text classifier."}

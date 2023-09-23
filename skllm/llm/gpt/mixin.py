@@ -197,7 +197,7 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
 
 # for now this works only with OpenAI
 class GPTTunableMixin(BaseTunableMixin):
-    system_msg = "You are a text classification model."
+    _supported_tunable_models = ["gpt-3.5-turbo-0613", "gpt-3.5-turbo"]
 
     def _build_label(self, label: str):
         return json.dumps({"label": label})
@@ -211,9 +211,16 @@ class GPTTunableMixin(BaseTunableMixin):
         filename = f"skllm_{file_uuid}.jsonl"
         with open(filename, "w+") as f:
             for xi, yi in zip(X, y):
+                prompt = self._get_prompt(xi)
+                if not isinstance(prompt["messages"], str):
+                    raise ValueError(
+                        "Incompatible prompt. Use a prompt with a single message."
+                    )
                 f.write(
                     _build_clf_example(
-                        self._get_prompt(xi), self._build_label(yi), self.system_msg
+                        prompt["messages"],
+                        self._build_label(yi),
+                        prompt["system_message"],
                     )
                 )
                 f.write("\n")
