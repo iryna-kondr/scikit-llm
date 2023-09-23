@@ -1,8 +1,9 @@
 import json
 from typing import Any
-
 import numpy as np
 import pandas as pd
+from functools import wraps
+from time import sleep
 
 
 def to_numpy(X: Any) -> np.ndarray:
@@ -70,3 +71,26 @@ def extract_json_key(json_: str, key: str):
             if i == 0:
                 continue
             return None
+
+
+def retry(max_retries=3):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    error_msg = str(e)
+                    error_type = type(e).__name__
+                    sleep(2**attempt)
+            err_msg = (
+                f"Could not complete the operation after {max_retries} retries:"
+                f" `{error_type} :: {error_msg}`"
+            )
+            print(err_msg)
+            raise RuntimeError(err_msg)
+
+        return wrapper
+
+    return decorator
