@@ -31,6 +31,7 @@ from skllm.prompts.builders import (
 from skllm.memory.base import IndexConstructor
 from skllm.memory._sklearn_nn import SklearnMemoryIndex
 from skllm.models._base.vectorizer import BaseVectorizer as _BaseVectorizer
+import ast
 
 _TRAINING_SAMPLE_PROMPT_TEMPLATE = """
 Sample input:
