@@ -135,6 +135,9 @@ class MultiLabelMixin:
 
 
 class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
+
+    system_msg = "You are a text classifier."
+
     def __init__(
         self,
         model: Optional[str],  # model can initially be None for tunable estimators
@@ -263,7 +266,7 @@ class BaseZeroShotClassifier(BaseClassifier):
                 self.max_labels,
                 template=self._get_prompt_template(),
             )
-        return {"messages": prompt, "system_message": "You are a text classifier."}
+        return {"messages": prompt, "system_message": self.system_msg}
 
 
 class BaseFewShotClassifier(BaseClassifier):

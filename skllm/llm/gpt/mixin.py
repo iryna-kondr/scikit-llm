@@ -151,9 +151,12 @@ class GPTClassifierMixin(GPTTextCompletionMixin, BaseClassifierMixin):
         label : str
         """
         try:
-            label = extract_json_key(
-                completion["choices"][0]["message"]["content"], "label"
-            )
+            if hasattr(completion, "__getitem__"):
+                label = extract_json_key(
+                    completion["choices"][0]["message"]["content"], "label"
+                )
+            else:
+                label = extract_json_key(completion.choices[0].message.content, "label")
         except Exception as e:
             print(completion)
             print(f"Could not extract the label from the completion: {str(e)}")

@@ -1,4 +1,5 @@
 import openai
+from openai import OpenAI
 from skllm.llm.gpt.clients.openai.credentials import (
     set_azure_credentials,
     set_credentials,
@@ -36,15 +37,14 @@ def get_chat_completion(
     completion : dict
     """
     if api == "openai":
-        set_credentials(key, org)
-        model_dict = {"model": model}
+        client = set_credentials(key, org)
+        model_dict = {"model": model, "response_format": {"type": "json_object"}}
     elif api == "azure":
-        set_azure_credentials(key, org)
-        model_dict = {"engine": model}
+        client = set_azure_credentials(key, org)
+        model_dict = {"model": model}
     else:
         raise ValueError("Invalid API")
-
-    completion = openai.ChatCompletion.create(
+    completion = client.chat.completions.create(
         temperature=0.0, messages=messages, **model_dict
     )
     return completion

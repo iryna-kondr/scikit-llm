@@ -1,6 +1,7 @@
 from skllm.llm.gpt.clients.openai.credentials import set_credentials
 from skllm.utils import retry
 import openai
+from openai import OpenAI
 
 
 @retry(max_retries=3)
@@ -31,10 +32,11 @@ def get_embedding(
     emb : list
         The GPT embedding for the string.
     """
-    set_credentials(key, org)
+    client = OpenAI()
+    set_credentials(client, key, org)
     text = [str(t).replace("\n", " ") for t in text]
     embeddings = []
-    emb = openai.Embedding.create(input=text, model=model)
+    emb = client.embeddings.create(input=text, model=model)
     for i in range(len(emb["data"])):
         e = emb["data"][i]["embedding"]
         if not isinstance(e, list):
