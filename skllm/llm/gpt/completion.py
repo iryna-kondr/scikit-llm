@@ -11,6 +11,7 @@ def get_chat_completion(
     openai_key: str = None,
     openai_org: str = None,
     model: str = "gpt-3.5-turbo",
+    json_response: bool = False,
 ):
     """Gets a chat completion from the OpenAI compatible API."""
     if model.startswith("gpt4all::"):
@@ -20,5 +21,10 @@ def get_chat_completion(
         if api == "azure":
             model = model[7:]
         return _oai_get_chat_completion(
-            messages, openai_key, openai_org, model, api=api
+            messages,
+            openai_key,
+            openai_org,
+            model,
+            api=api,
+            json_response=json_response,
         )

@@ -60,6 +60,8 @@ class GPTMixin:
     A mixin class that provides OpenAI key and organization to other classes.
     """
 
+    _prefer_json_output = False
+
     def _set_keys(self, key: Optional[str] = None, org: Optional[str] = None) -> None:
         """
         Set the OpenAI key and organization.
@@ -132,12 +134,18 @@ class GPTTextCompletionMixin(GPTMixin, BaseTextCompletionMixin):
             for message in messages:
                 msgs.append(construct_message(message["role"], message["content"]))
         completion = get_chat_completion(
-            msgs, self._get_openai_key(), self._get_openai_org(), model
+            msgs,
+            self._get_openai_key(),
+            self._get_openai_org(),
+            model,
+            json_response=self._prefer_json_output,
         )
         return completion
 
 
 class GPTClassifierMixin(GPTTextCompletionMixin, BaseClassifierMixin):
+    _prefer_json_output = True
+
     def _extract_out_label(self, completion: Mapping[str, Any], **kwargs) -> Any:
         """Extracts the label from a completion.
 
@@ -204,6 +212,16 @@ class GPTTunableMixin(BaseTunableMixin):
 
     def _build_label(self, label: str):
         return json.dumps({"label": label})
+
+    def _set_hyperparameters(self, base_model: str, n_epochs: int, custom_suffix: str):
+        self.base_model = base_model
+        self.n_epochs = n_epochs
+        self.custom_suffix = custom_suffix
+        if base_model not in self._supported_tunable_models:
+            raise ValueError(
+                f"Model {base_model} is not supported. Supported models are"
+                f" {self._supported_tunable_models}"
+            )
 
     def _tune(self, X, y):
         if self.base_model.startswith(("azure::", "gpt4all")):

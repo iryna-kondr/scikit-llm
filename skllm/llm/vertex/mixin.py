@@ -6,11 +6,12 @@ from skllm.llm.base import (
     BaseTextCompletionMixin,
     BaseTunableMixin,
 )
+from skllm.llm.vertex.tuning import tune
 from skllm.llm.vertex.completion import get_completion_chat_mode, get_completion
 from skllm.utils import extract_json_key
 import numpy as np
 from tqdm import tqdm
-import json
+import pandas as pd
 
 
 class VertexMixin:
@@ -68,6 +69,24 @@ class VertexEmbeddingMixin(BaseEmbeddingMixin):
 
 
 class VertexTunableMixin(BaseTunableMixin):
-    # TODO
+    _supported_tunable_models = ["text-bison@002"]
+
+    def _set_hyperparameters(self, base_model: str, n_update_steps: int, **kwargs):
+        self.verify_model_is_supported(base_model)
+        self.base_model = base_model
+        self.n_update_steps = n_update_steps
+
+    def verify_model_is_supported(self, model: str):
+        if model not in self._supported_tunable_models:
+            raise ValueError(
+                f"Model {model} is not supported. Supported models are"
+                f" {self._supported_tunable_models}"
+            )
+
     def _tune(self, X: Any, y: Any):
-        raise NotImplementedError("Tuning is not yet supported for Vertex AI.")
+        df = pd.DataFrame({"input_text": X, "output_text": y})
+        job = tune(self.base_model, df, self.n_update_steps)._job
+        tuned_model = job.result()
+        self.tuned_model_ = tuned_model._model_resource_name
+        self.model = tuned_model
+        return self

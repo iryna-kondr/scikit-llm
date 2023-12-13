@@ -10,19 +10,11 @@ from skllm.models._base.classifier import (
 from typing import Optional
 
 
-class _Tunable(_BaseTunableClassifier, _GPTClassifierMixin, _GPTTunableMixin):
-    def _set_hyperparameters(self, base_model: str, n_epochs: int, custom_suffix: str):
-        self.base_model = base_model
-        self.n_epochs = n_epochs
-        self.custom_suffix = custom_suffix
-        if base_model not in self._supported_tunable_models:
-            raise ValueError(
-                f"Model {base_model} is not supported. Supported models are"
-                f" {self._supported_tunable_models}"
-            )
+class _TunableClassifier(_BaseTunableClassifier, _GPTClassifierMixin, _GPTTunableMixin):
+    pass
 
 
-class GPTClassifier(_Tunable, _SingleLabelMixin):
+class GPTClassifier(_TunableClassifier, _SingleLabelMixin):
     def __init__(
         self,
         base_model: str = "gpt-3.5-turbo-0613",
@@ -40,7 +32,7 @@ class GPTClassifier(_Tunable, _SingleLabelMixin):
         self._set_hyperparameters(base_model, n_epochs, custom_suffix)
 
 
-class MultiLabelGPTClassifier(_Tunable, _MultiLabelMixin):
+class MultiLabelGPTClassifier(_TunableClassifier, _MultiLabelMixin):
     def __init__(
         self,
         base_model: str = "gpt-3.5-turbo-0613",

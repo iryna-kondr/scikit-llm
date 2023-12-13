@@ -56,18 +56,3 @@ repos:
       - id: docformatter
         additional_dependencies: [tomli]
         args: ["--in-place", "--config", "pyproject.toml"]
-  # Python tool for docstring coverage
-  - repo: https://github.com/econchick/interrogate
-    rev: 1.5.0
-    hooks:
-      - id: interrogate
-        args:
-          [
-            "--config",
-            "pyproject.toml",
-            "--generate-badge",
-            ".github/assets/badges",
-            "--badge-style",
-            "flat",
-          ]
-        pass_filenames: false

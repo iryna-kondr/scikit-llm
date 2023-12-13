@@ -27,3 +27,7 @@ class BaseTunableMixin(ABC):
     @abstractmethod
     def _tune(self, X: Any, y: Any):
         pass
+
+    @abstractmethod
+    def _set_hyperparameters(self, **kwargs):
+        pass

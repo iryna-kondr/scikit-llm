@@ -14,6 +14,7 @@ def get_chat_completion(
     org: str,
     model: str = "gpt-3.5-turbo",
     api="openai",
+    json_response=False,
 ):
     """Gets a chat completion from the OpenAI API.
 
@@ -38,12 +39,13 @@ def get_chat_completion(
     """
     if api == "openai":
         client = set_credentials(key, org)
-        model_dict = {"model": model, "response_format": {"type": "json_object"}}
     elif api == "azure":
         client = set_azure_credentials(key, org)
-        model_dict = {"model": model}
     else:
         raise ValueError("Invalid API")
+    model_dict = {"model": model}
+    if json_response and model in ["gpt-4-1106-preview", "gpt-3.5-turbo-1106"]:
+        model_dict["response_format"] = {"type": "json_object"}
     completion = client.chat.completions.create(
         temperature=0.0, messages=messages, **model_dict
     )
