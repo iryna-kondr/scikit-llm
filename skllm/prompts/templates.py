@@ -15,6 +15,16 @@ Text sample: ```{x}```
 Your JSON response:
 """
 
+ZERO_SHOT_CLF_SHORT_PROMPT_TEMPLATE = """
+Classify the following text into one of the following classes: {labels}. Provide your response in a JSON format containing a single key `label`.
+Text: ```{x}```
+"""
+
+ZERO_SHOT_MLCLF_SHORT_PROMPT_TEMPLATE = """
+Classify the following text into at least 1 but up to {max_cats} of the following classes: {labels}. Provide your response in a JSON format containing a single key `label`.
+Text: ```{x}```
+"""
+
 FEW_SHOT_CLF_PROMPT_TEMPLATE = """
 You will be provided with the following information:
 1. An arbitrary text sample. The sample is delimited with triple backticks.

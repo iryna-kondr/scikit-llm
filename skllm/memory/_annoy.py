@@ -78,7 +78,6 @@ class AnnoyMemoryIndex(_BaseMemoryIndex):
         List
             ids of retrieved nearest neighbors
         """
-        print("ANNOY RETRIEVE")
         if not self.built:
             raise RuntimeError("Cannot retrieve vectors before the index is built.")
         return [
