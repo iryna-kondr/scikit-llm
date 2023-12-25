@@ -38,6 +38,9 @@ class VertexTextCompletionMixin(BaseTextCompletionMixin):
             completion = get_completion(model, messages)
         return str(completion)
 
+    def _convert_completion_to_str(self, completion: str) -> str:
+        return completion
+
 
 class VertexClassifierMixin(BaseClassifierMixin, VertexTextCompletionMixin):
     def _extract_out_label(self, completion: str, **kwargs) -> Any:
@@ -52,14 +55,12 @@ class VertexClassifierMixin(BaseClassifierMixin, VertexTextCompletionMixin):
         -------
         label : str
         """
-        print(completion)
         try:
             label = extract_json_key(str(completion), "label")
         except Exception as e:
             print(completion)
             print(f"Could not extract the label from the completion: {str(e)}")
             label = ""
-        print(label)
         return label
 
 
@@ -88,5 +89,5 @@ class VertexTunableMixin(BaseTunableMixin):
         job = tune(self.base_model, df, self.n_update_steps)._job
         tuned_model = job.result()
         self.tuned_model_ = tuned_model._model_resource_name
-        self.model = tuned_model
+        self.model = tuned_model._model_resource_name
         return self

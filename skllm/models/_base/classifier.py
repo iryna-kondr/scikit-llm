@@ -45,7 +45,8 @@ class SingleLabelMixin:
     """Mixin class for single label classification."""
 
     def validate_prediction(self, label: Any) -> str:
-        """Validates a prediction.
+        """
+        Validates a prediction.
 
         Parameters
         ----------
@@ -64,7 +65,8 @@ class SingleLabelMixin:
         return label
 
     def _extract_labels(self, y: Any) -> List[str]:
-        """Return the class labels as a list.
+        """
+        Return the class labels as a list.
 
         Parameters
         ----------
@@ -85,7 +87,8 @@ class MultiLabelMixin:
     """Mixin class for multi label classification."""
 
     def validate_prediction(self, label: Any) -> List[str]:
-        """Validates a prediction.
+        """
+        Validates a prediction.
 
         Parameters
         ----------
@@ -135,7 +138,6 @@ class MultiLabelMixin:
 
 
 class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
-
     system_msg = "You are a text classifier."
 
     def __init__(
@@ -190,22 +192,28 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
-        """Extracts the target for each datapoint in X.
+        """
+        Fits the model to the given data.
 
         Parameters
         ----------
         X : Optional[Union[np.ndarray, pd.Series, List[str]]]
-            The input array data to fit the model to.
-
+            Training data
         y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
-            The target array data to fit the model to.
+            Training labels
+
+        Returns
+        -------
+        BaseClassifier
+            self
         """
         X = _to_numpy(X)
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
     def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
-        """Predicts the class of each input.
+        """
+        Predicts the class of each input.
 
         Parameters
         ----------
@@ -310,18 +318,19 @@ class BaseFewShotClassifier(BaseClassifier):
         X: Union[np.ndarray, pd.Series, List[str]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
-        """Fits the model to the given data.
+        """
+        Fits the model to the given data.
 
         Parameters
         ----------
         X : Union[np.ndarray, pd.Series, List[str]]
-            training data
+            Training data
         y : Union[np.ndarray, pd.Series, List[str]]
-            training labels
+            Training labels
 
         Returns
         -------
-        FewShotGPTClassifier
+        BaseFewShotClassifier
             self
         """
         if not len(X) == len(y):
@@ -359,18 +368,19 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         X: Union[np.ndarray, pd.Series, List[str]],
         y: Union[np.ndarray, pd.Series, List[str]],
     ):
-        """Fits the model to the given data.
+        """
+        Fits the model to the given data.
 
         Parameters
         ----------
         X : Union[np.ndarray, pd.Series, List[str]]
-            training data
+            Training data
         y : Union[np.ndarray, pd.Series, List[str]]
-            training labels
+            Training labels
 
         Returns
         -------
-        DynamicFewShotGPTClassifier
+        BaseDynamicFewShotClassifier
             self
         """
 
@@ -407,7 +417,8 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         return FEW_SHOT_CLF_PROMPT_TEMPLATE
 
     def _get_prompt(self, x: str) -> dict:
-        """Generates the prompt for the given input.
+        """
+        Generates the prompt for the given input.
 
         Parameters
         ----------
@@ -451,6 +462,21 @@ class BaseTunableClassifier(BaseClassifier):
         X: Optional[Union[np.ndarray, pd.Series, List[str]]],
         y: Union[np.ndarray, pd.Series, List[str], List[List[str]]],
     ):
+        """
+        Fits the model to the given data.
+
+        Parameters
+        ----------
+        X : Optional[Union[np.ndarray, pd.Series, List[str]]]
+            Training data
+        y : Union[np.ndarray, pd.Series, List[str], List[List[str]]]
+            Training labels
+
+        Returns
+        -------
+        BaseTunableClassifier
+            self
+        """
         if not isinstance(self, _BaseTunableMixin):
             raise TypeError(
                 "Classifier must be mixed with a skllm.llm.base.BaseTunableMixin class"

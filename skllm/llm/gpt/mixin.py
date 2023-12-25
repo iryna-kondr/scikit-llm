@@ -142,6 +142,11 @@ class GPTTextCompletionMixin(GPTMixin, BaseTextCompletionMixin):
         )
         return completion
 
+    def _convert_completion_to_str(self, completion: Mapping[str, Any]):
+        if hasattr(completion, "__getitem__"):
+            return str(completion["choices"][0]["message"]["content"])
+        return str(completion.choices[0].message.content)
+
 
 class GPTClassifierMixin(GPTTextCompletionMixin, BaseClassifierMixin):
     _prefer_json_output = True
@@ -193,7 +198,6 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
         print("Batch size:", self.batch_size)
         for i in tqdm(range(0, len(text), self.batch_size)):
             batch = text[i : i + self.batch_size].tolist()
-            print(batch)
             embeddings.extend(
                 get_embedding(
                     batch,
@@ -245,16 +249,17 @@ class GPTTunableMixin(BaseTunableMixin):
                     )
                 )
                 f.write("\n")
-        _set_credentials_openai(self._get_openai_key(), self._get_openai_org())
+        client = _set_credentials_openai(self._get_openai_key(), self._get_openai_org())
         job = create_tuning_job(
+            client,
             self.base_model,
             filename,
             self.n_epochs,
             self.custom_suffix,
         )
-        print(f"Created new tuning job. JOB_ID = {job['id']}")
-        job = await_results(job["id"])
-        self.openai_model = job["fine_tuned_model"]
+        print(f"Created new tuning job. JOB_ID = {job.id}")
+        job = await_results(client, job.id)
+        self.openai_model = job.fine_tuned_model
         self.model = self.openai_model  # openai_model is probably not required anymore
-        delete_file(job["training_file"])
-        print(f"Finished training. Number of trained tokens: {job['trained_tokens']}.")
+        delete_file(client, job.training_file)
+        print(f"Finished training.")

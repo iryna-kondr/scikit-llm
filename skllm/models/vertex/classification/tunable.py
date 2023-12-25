@@ -21,9 +21,21 @@ class VertexClassifier(_TunableClassifier, _SingleLabelMixin):
         self,
         base_model: str = "text-bison@002",
         n_update_steps: int = 1,
-        default_label: Optional[str] = "Random",
+        default_label: str = "Random",
     ):
-        self._set_hyperparametersI(base_model=base_model, n_update_steps=n_update_steps)
+        """
+        Tunable Vertex-based text classifier.
+
+        Parameters
+        ----------
+        base_model : str, optional
+            base model to use, by default "text-bison@002"
+        n_update_steps : int, optional
+            number of epochs, by default 1
+        default_label : str, optional
+            default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
+        """
+        self._set_hyperparameters(base_model=base_model, n_update_steps=n_update_steps)
         super().__init__(
             model=None,
             default_label=default_label,

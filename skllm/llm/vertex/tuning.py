@@ -10,4 +10,4 @@ def tune(model: str, data: DataFrame, train_steps: int = 100):
         tuning_job_location="europe-west4",  # the only supported training location atm
         tuned_model_location="us-central1",  # the only supported deployment location atm
     )
-    return model  # ._job
+    return model

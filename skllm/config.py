@@ -10,6 +10,27 @@ _GOOGLE_PROJECT = "GOOGLE_CLOUD_PROJECT"
 
 class SKLLMConfig:
     @staticmethod
+    def set_gpt_key(key: str) -> None:
+        """Sets the GPT key.
+
+        Parameters
+        ----------
+        key : str
+            GPT key.
+        """
+        os.environ[_OPENAI_KEY_VAR] = key
+
+    def set_gpt_org(key: str) -> None:
+        """Sets the GPT organization ID.
+
+        Parameters
+        ----------
+        key : str
+            GPT organization ID.
+        """
+        os.environ[_OPENAI_ORG_VAR] = key
+
+    @staticmethod
     def set_openai_key(key: str) -> None:
         """Sets the OpenAI key.
 

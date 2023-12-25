@@ -12,11 +12,23 @@ class ZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@001",
-        default_label: Optional[str] = "Random",
+        model: str = "text-bison@002",
+        default_label: str = "Random",
         prompt_template: Optional[str] = None,
         **kwargs,
     ):
+        """
+        Zero-shot text classifier using Vertex AI models.
+
+        Parameters
+        ----------
+        model : str, optional
+            model to use, by default "text-bison@002"
+        default_label : str, optional
+            default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
+        prompt_template : Optional[str], optional
+            custom prompt template to use, by default None
+        """
         super().__init__(
             model=model,
             default_label=default_label,
@@ -30,12 +42,26 @@ class MultiLabelZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@001",
-        default_label: Optional[str] = "Random",
+        model: str = "text-bison@002",
+        default_label: str = "Random",
         prompt_template: Optional[str] = None,
         max_labels: Optional[int] = 5,
         **kwargs,
     ):
+        """
+        Multi-label zero-shot text classifier using Vertex AI models.
+
+        Parameters
+        ----------
+        model : str, optional
+            model to use, by default "text-bison@002"
+        default_label : str, optional
+            default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
+        prompt_template : Optional[str], optional
+            custom prompt template to use, by default None
+        max_labels : Optional[int], optional
+            maximum labels per sample, by default 5
+        """
         super().__init__(
             model=model,
             default_label=default_label,

@@ -8,10 +8,15 @@ class BaseTextCompletionMixin(ABC):
         """Gets a chat completion from the LLM"""
         pass
 
+    @abstractmethod
+    def _convert_completion_to_str(self, completion: Any):
+        """Converts a completion object to a string"""
+        pass
+
 
 class BaseClassifierMixin(BaseTextCompletionMixin):
     @abstractmethod
-    def _extract_out_label(self, completion: Any, **kwargs):
+    def _extract_out_label(self, completion: Any) -> str:
         """Extracts the label from a completion"""
         pass
 

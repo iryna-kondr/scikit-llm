@@ -32,13 +32,12 @@ def get_embedding(
     emb : list
         The GPT embedding for the string.
     """
-    client = OpenAI()
-    set_credentials(client, key, org)
+    client = set_credentials(key, org)
     text = [str(t).replace("\n", " ") for t in text]
     embeddings = []
     emb = client.embeddings.create(input=text, model=model)
-    for i in range(len(emb["data"])):
-        e = emb["data"][i]["embedding"]
+    for i in range(len(emb.data)):
+        e = emb.data[i].embedding
         if not isinstance(e, list):
             raise ValueError(
                 f"Encountered unknown embedding format. Expected list, got {type(emb)}"
