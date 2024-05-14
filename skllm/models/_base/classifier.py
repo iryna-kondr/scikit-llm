@@ -351,6 +351,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         memory_index: Optional[IndexConstructor] = None,
         vectorizer: _BaseVectorizer = None,
         prompt_template: Optional[str] = None,
+        metric="euclidean",
     ):
         super().__init__(
             model=model,
@@ -360,6 +361,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         self.vectorizer = vectorizer
         self.memory_index = memory_index
         self.n_examples = n_examples
+        self.metric = metric
         if isinstance(self, MultiLabelMixin):
             raise TypeError("Multi-label classification is not supported")
 
@@ -402,7 +404,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
                 index = self.memory_index()
                 index.dim = embeddings.shape[1]
             else:
-                index = SklearnMemoryIndex(embeddings.shape[1])
+                index = SklearnMemoryIndex(embeddings.shape[1], metric=self.metric)
             for embedding in embeddings:
                 index.add(embedding)
             index.build()
