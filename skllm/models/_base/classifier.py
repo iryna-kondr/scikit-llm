@@ -222,13 +222,14 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
 
         Returns
         -------
-        List[str]
+        np.ndarray
+            The predicted classes as a numpy array.
         """
         X = _to_numpy(X)
         predictions = []
         for i in tqdm(range(len(X))):
             predictions.append(self._predict_single(X[i]))
-        return predictions
+        return np.array(predictions)
 
     def _get_unique_targets(self, y: Any):
         labels = self._extract_labels(y)
