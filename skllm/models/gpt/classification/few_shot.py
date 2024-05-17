@@ -100,6 +100,7 @@ class DynamicFewShotGPTClassifier(
         n_examples: int = 3,
         memory_index: Optional[IndexConstructor] = None,
         vectorizer: Optional[BaseVectorizer] = None,
+        metric: Optional[str] = "euclidean",
         **kwargs,
     ):
         """
@@ -124,6 +125,8 @@ class DynamicFewShotGPTClassifier(
             custom memory index, for details check `skllm.memory` submodule, by default None
         vectorizer : Optional[BaseVectorizer], optional
             scikit-llm vectorizer; if None, `GPTVectorizer` is used, by default None
+        metric : Optional[str], optional
+            metric used for similarity search, by default "euclidean"
         """
         if vectorizer is None:
             vectorizer = GPTVectorizer(model="text-embedding-ada-002")
@@ -134,5 +137,6 @@ class DynamicFewShotGPTClassifier(
             n_examples=n_examples,
             memory_index=memory_index,
             vectorizer=vectorizer,
+            metric=metric,
         )
         self._set_keys(key, org)

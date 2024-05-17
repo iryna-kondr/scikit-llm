@@ -222,13 +222,14 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
 
         Returns
         -------
-        List[str]
+        np.ndarray
+            The predicted classes as a numpy array.
         """
         X = _to_numpy(X)
         predictions = []
         for i in tqdm(range(len(X))):
             predictions.append(self._predict_single(X[i]))
-        return predictions
+        return np.array(predictions)
 
     def _get_unique_targets(self, y: Any):
         labels = self._extract_labels(y)
@@ -351,6 +352,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         memory_index: Optional[IndexConstructor] = None,
         vectorizer: _BaseVectorizer = None,
         prompt_template: Optional[str] = None,
+        metric="euclidean",
     ):
         super().__init__(
             model=model,
@@ -360,6 +362,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
         self.vectorizer = vectorizer
         self.memory_index = memory_index
         self.n_examples = n_examples
+        self.metric = metric
         if isinstance(self, MultiLabelMixin):
             raise TypeError("Multi-label classification is not supported")
 
@@ -402,7 +405,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
                 index = self.memory_index()
                 index.dim = embeddings.shape[1]
             else:
-                index = SklearnMemoryIndex(embeddings.shape[1])
+                index = SklearnMemoryIndex(embeddings.shape[1], metric=self.metric)
             for embedding in embeddings:
                 index.add(embedding)
             index.build()
