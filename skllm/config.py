@@ -6,6 +6,7 @@ _OPENAI_ORG_VAR = "SKLLM_CONFIG_OPENAI_ORG"
 _AZURE_API_BASE_VAR = "SKLLM_CONFIG_AZURE_API_BASE"
 _AZURE_API_VERSION_VAR = "SKLLM_CONFIG_AZURE_API_VERSION"
 _GOOGLE_PROJECT = "GOOGLE_CLOUD_PROJECT"
+_GPT_URL_VAR = "SKLLM_CONFIG_GPT_URL"
 
 
 class SKLLMConfig:
@@ -142,3 +143,30 @@ class SKLLMConfig:
             Google Cloud project ID.
         """
         os.environ[_GOOGLE_PROJECT] = project
+
+    @staticmethod
+    def set_gpt_url(url: str):
+        """Sets the GPT URL.
+
+        Parameters
+        ----------
+        url : str
+            GPT URL.
+        """
+        os.environ[_GPT_URL_VAR] = url
+
+    @staticmethod
+    def get_gpt_url() -> Optional[str]:
+        """Gets the GPT URL.
+
+        Returns
+        -------
+        Optional[str]
+            GPT URL.
+        """
+        return os.environ.get(_GPT_URL_VAR, None)
+
+    @staticmethod
+    def reset_gpt_url():
+        """Resets the GPT URL."""
+        os.environ.pop(_GPT_URL_VAR, None)

@@ -2,6 +2,7 @@ import openai
 from skllm.config import SKLLMConfig as _Config
 from time import sleep
 from openai import OpenAI, AzureOpenAI
+from skllm.config import SKLLMConfig as _Config
 
 
 def set_credentials(key: str, org: str) -> None:
@@ -14,7 +15,8 @@ def set_credentials(key: str, org: str) -> None:
     org : str
         The OPEN AI organization ID to use.
     """
-    client = OpenAI(api_key=key, organization=org)
+    url = _Config.get_gpt_url()
+    client = OpenAI(api_key=key, organization=org, base_url=url)
     return client
 
 

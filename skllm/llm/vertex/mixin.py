@@ -1,5 +1,4 @@
-from typing import Optional, Union, List, Any, Dict, Mapping
-from skllm.config import SKLLMConfig as _Config
+from typing import Optional, Union, List, Any, Dict
 from skllm.llm.base import (
     BaseClassifierMixin,
     BaseEmbeddingMixin,
@@ -7,10 +6,9 @@ from skllm.llm.base import (
     BaseTunableMixin,
 )
 from skllm.llm.vertex.tuning import tune
-from skllm.llm.vertex.completion import get_completion_chat_mode, get_completion
+from skllm.llm.vertex.completion import get_completion_chat_mode, get_completion, get_completion_chat_gemini
 from skllm.utils import extract_json_key
 import numpy as np
-from tqdm import tqdm
 import pandas as pd
 
 
@@ -34,6 +32,8 @@ class VertexTextCompletionMixin(BaseTextCompletionMixin):
             raise ValueError("Only messages as strings are supported.")
         if model.startswith("chat-"):
             completion = get_completion_chat_mode(model, system_message, messages)
+        elif model.startswith("gemini-"):
+            completion = get_completion_chat_gemini(model, system_message, messages)
         else:
             completion = get_completion(model, messages)
         return str(completion)

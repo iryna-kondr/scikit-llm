@@ -212,7 +212,7 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
 
 # for now this works only with OpenAI
 class GPTTunableMixin(BaseTunableMixin):
-    _supported_tunable_models = ["gpt-3.5-turbo-0613", "gpt-3.5-turbo"]
+    _supported_tunable_models = ["gpt-3.5-turbo-0125", "gpt-3.5-turbo"]
 
     def _build_label(self, label: str):
         return json.dumps({"label": label})

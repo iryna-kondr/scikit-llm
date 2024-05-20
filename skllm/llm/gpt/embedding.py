@@ -1,5 +1,5 @@
 from skllm.llm.gpt.clients.openai.embedding import get_embedding as _oai_get_embedding
-
+from skllm.llm.gpt.utils import split_to_api_and_model
 
 def get_embedding(
     text: str,
@@ -26,8 +26,7 @@ def get_embedding(
     emb : list
         The GPT embedding for the string.
     """
-    if model.startswith("gpt4all::"):
+    api, model = split_to_api_and_model(model)  
+    if api == ("gpt4all"):
         raise ValueError("GPT4All is not supported for embeddings")
-    elif model.startswith("azure::"):
-        raise ValueError("Azure is not supported for embeddings")
-    return _oai_get_embedding(text, key, org, model)
+    return _oai_get_embedding(text, key, org, model, api=api)
