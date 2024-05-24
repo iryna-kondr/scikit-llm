@@ -1,5 +1,5 @@
 from pandas import DataFrame
-from vertexai.preview.language_models import TextGenerationModel
+from vertexai.language_models import TextGenerationModel
 
 
 def tune(model: str, data: DataFrame, train_steps: int = 100):

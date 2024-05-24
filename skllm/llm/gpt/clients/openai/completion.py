@@ -37,14 +37,14 @@ def get_chat_completion(
     -------
     completion : dict
     """
-    if api == "openai":
+    if api in ("openai", "custom_url"):
         client = set_credentials(key, org)
     elif api == "azure":
         client = set_azure_credentials(key, org)
     else:
         raise ValueError("Invalid API")
     model_dict = {"model": model}
-    if json_response and model in ["gpt-4-1106-preview", "gpt-3.5-turbo-1106"]:
+    if json_response and api == "openai":
         model_dict["response_format"] = {"type": "json_object"}
     completion = client.chat.completions.create(
         temperature=0.0, messages=messages, **model_dict

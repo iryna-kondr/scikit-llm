@@ -6,7 +6,7 @@ from typing import Optional
 class GPTVectorizer(_BaseVectorizer, _GPTEmbeddingMixin):
     def __init__(
         self,
-        model: str = "text-embedding-ada-002",
+        model: str = "text-embedding-3-small",
         batch_size: int = 1,
         key: Optional[str] = None,
         org: Optional[str] = None,
