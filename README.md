@@ -60,7 +60,7 @@ clf.fit(X,y)
 clf.predict(X)
 ```
 
-For more information please refer to the [documentation](https://beastbyteai.github.io/scikit-llm-docs/).
+For more information please refer to the **[documentation](https://skllm.beastbyte.ai)**.
 
 ## Citation
 
