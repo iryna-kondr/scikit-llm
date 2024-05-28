@@ -66,8 +66,14 @@ class GPTMixin:
         """
         Set the OpenAI key and organization.
         """
-        self.openai_key = key
-        self.openai_org = org
+            
+        self.key = key
+        self.org = org
+        
+        if self.key is None:
+            self.key = self._get_openai_key()
+        if org is None:
+            self.org = self._get_openai_org()
 
     def _get_openai_key(self) -> str:
         """
@@ -77,12 +83,12 @@ class GPTMixin:
         -------
         openai_key: str
         """
-        key = self.openai_key
-        if key is None:
-            key = _Config.get_openai_key()
-        if key is None:
+        openai_key = self.key
+        if openai_key is None:
+            openai_key = _Config.get_openai_key()
+        if openai_key is None:
             raise RuntimeError("OpenAI key was not found")
-        return key
+        return openai_key
 
     def _get_openai_org(self) -> str:
         """
@@ -92,12 +98,12 @@ class GPTMixin:
         -------
         openai_org: str
         """
-        key = self.openai_org
-        if key is None:
-            key = _Config.get_openai_org()
-        if key is None:
+        openai_org = self.org
+        if openai_org is None:
+            openai_org = _Config.get_openai_org()
+        if openai_org is None:
             raise RuntimeError("OpenAI organization was not found")
-        return key
+        return openai_org
 
 
 class GPTTextCompletionMixin(GPTMixin, BaseTextCompletionMixin):
@@ -212,7 +218,7 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
 
 # for now this works only with OpenAI
 class GPTTunableMixin(BaseTunableMixin):
-    _supported_tunable_models = ["gpt-3.5-turbo-0125", "gpt-3.5-turbo"]
+    _supported_tunable_models = ["gpt-3.5-turbo-0613", "gpt-3.5-turbo"]
 
     def _build_label(self, label: str):
         return json.dumps({"label": label})
