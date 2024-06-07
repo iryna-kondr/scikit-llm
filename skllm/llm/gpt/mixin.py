@@ -77,7 +77,7 @@ class GPTMixin:
 
         Returns
         -------
-        openai_key: str
+        key: str
         """
         key = self.key
         if key is None:
@@ -92,7 +92,7 @@ class GPTMixin:
 
         Returns
         -------
-        openai_org: str
+        org: str
         """
         org = self.org
         if org is None:
