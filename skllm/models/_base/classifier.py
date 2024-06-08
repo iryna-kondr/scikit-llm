@@ -231,7 +231,8 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
         """
         X = _to_numpy(X)
         
-        
+        if num_workers > 1:
+            raise DeprecationWarning("Passing num_workers to predict is temporary and will be removed in the future.")
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
             predictions = list(tqdm(executor.map(self._predict_single, X), total=len(X)))
             
