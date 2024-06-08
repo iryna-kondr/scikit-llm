@@ -66,8 +66,10 @@ class GPTMixin:
         """
         Set the OpenAI key and organization.
         """
-        self.openai_key = key
-        self.openai_org = org
+            
+        self.key = key
+        self.org = org
+        
 
     def _get_openai_key(self) -> str:
         """
@@ -75,9 +77,9 @@ class GPTMixin:
 
         Returns
         -------
-        openai_key: str
+        key: str
         """
-        key = self.openai_key
+        key = self.key
         if key is None:
             key = _Config.get_openai_key()
         if key is None:
@@ -90,14 +92,14 @@ class GPTMixin:
 
         Returns
         -------
-        openai_org: str
+        org: str
         """
-        key = self.openai_org
-        if key is None:
-            key = _Config.get_openai_org()
-        if key is None:
+        org = self.org
+        if org is None:
+            org = _Config.get_openai_org()
+        if org is None:
             raise RuntimeError("OpenAI organization was not found")
-        return key
+        return org
 
 
 class GPTTextCompletionMixin(GPTMixin, BaseTextCompletionMixin):

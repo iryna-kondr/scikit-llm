@@ -129,7 +129,7 @@ class DynamicFewShotGPTClassifier(
             metric used for similarity search, by default "euclidean"
         """
         if vectorizer is None:
-            vectorizer = GPTVectorizer(model="text-embedding-ada-002")
+            vectorizer = GPTVectorizer(model="text-embedding-ada-002", key=key, org=org)
         super().__init__(
             model=model,
             default_label=default_label,
