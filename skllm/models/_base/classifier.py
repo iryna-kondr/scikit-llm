@@ -4,9 +4,11 @@ from sklearn.base import (
     BaseEstimator as _SklBaseEstimator,
     ClassifierMixin as _SklClassifierMixin,
 )
+import warnings
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
+from concurrent.futures import ThreadPoolExecutor
 import random
 from collections import Counter
 from skllm.llm.base import (
@@ -211,7 +213,7 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
         self.classes_, self.probabilities_ = self._get_unique_targets(y)
         return self
 
-    def predict(self, X: Union[np.ndarray, pd.Series, List[str]]):
+    def predict(self, X: Union[np.ndarray, pd.Series, List[str]], num_workers: int = 1):
         """
         Predicts the class of each input.
 
@@ -219,6 +221,9 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
         ----------
         X : Union[np.ndarray, pd.Series, List[str]]
             The input data to predict the class of.
+            
+        num_workers : int
+            number of workers to use for multithreaded prediction, default 1
 
         Returns
         -------
@@ -226,9 +231,12 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
             The predicted classes as a numpy array.
         """
         X = _to_numpy(X)
-        predictions = []
-        for i in tqdm(range(len(X))):
-            predictions.append(self._predict_single(X[i]))
+        
+        if num_workers > 1:
+            warnings.warn("Passing num_workers to predict is temporary and will be removed in the future.")
+        with ThreadPoolExecutor(max_workers=num_workers) as executor:
+            predictions = list(tqdm(executor.map(self._predict_single, X), total=len(X)))
+            
         return np.array(predictions)
 
     def _get_unique_targets(self, y: Any):
