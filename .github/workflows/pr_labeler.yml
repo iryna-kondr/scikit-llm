@@ -12,6 +12,6 @@ jobs:
   pr-labeler:
     runs-on: ubuntu-latest
     steps:
-      - uses: TimonVS/pr-labeler-action@v4
+      - uses: TimonVS/pr-labeler-action@v5
         with:
           repo-token: ${{ github.token }}
