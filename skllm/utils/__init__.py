@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from functools import wraps
 from time import sleep
-
+import re
 
 def to_numpy(X: Any) -> np.ndarray:
     """Converts a pandas Series or list to a numpy array.
@@ -23,10 +23,11 @@ def to_numpy(X: Any) -> np.ndarray:
     elif isinstance(X, list):
         X = np.asarray(X, dtype=object)
     if isinstance(X, np.ndarray) and len(X.shape) > 1:
-        X = np.squeeze(X)
+        # do not squeeze the first dim
+        X = np.squeeze(X, axis=tuple([i for i in range(1, len(X.shape))]))
     return X
 
-
+# TODO: replace with re version below
 def find_json_in_string(string: str) -> str:
     """Finds the JSON object in a string.
 
@@ -46,6 +47,30 @@ def find_json_in_string(string: str) -> str:
     else:
         json_string = "{}"
     return json_string
+
+
+
+def re_naive_json_extractor(json_string: str, expected_output: str = "object") -> str:
+    """Finds the first JSON-like object or array in a string using regex.
+    
+    Parameters
+    ----------
+    string : str
+        The string to search for a JSON object or array.
+
+    Returns
+    -------
+    json_string : str
+        A JSON string if found, otherwise an empty JSON object.
+    """
+    json_pattern = json_pattern = r'(\{.*\}|\[.*\])'
+    match = re.search(json_pattern, json_string, re.DOTALL)
+    if match:
+        return match.group(0)
+    else:
+        return r"{}" if expected_output == "object" else "[]"
+
+
 
 
 def extract_json_key(json_: str, key: str):

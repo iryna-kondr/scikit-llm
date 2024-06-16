@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Optional
 
 from skllm.prompts.templates import (
     FEW_SHOT_CLF_PROMPT_TEMPLATE,
@@ -8,6 +8,7 @@ from skllm.prompts.templates import (
     TRANSLATION_PROMPT_TEMPLATE,
     ZERO_SHOT_CLF_PROMPT_TEMPLATE,
     ZERO_SHOT_MLCLF_PROMPT_TEMPLATE,
+    EXPLAINABLE_NER_DENSE_PROMPT_TEMPLATE,
 )
 
 # TODO add validators
@@ -190,3 +191,27 @@ def build_translation_prompt(
         prepared prompt
     """
     return template.format(x=x, output_language=output_language)
+
+
+def build_ner_prompt(
+    entities: list,
+    x: str,
+    template: str = EXPLAINABLE_NER_DENSE_PROMPT_TEMPLATE,
+) -> str:
+    """Builds a prompt for named entity recognition.
+
+    Parameters
+    ----------
+    entities : list
+        list of entities to recognize
+    x : str
+        sample to recognize entities in
+    template : str, optional
+        prompt template to use, must contain placeholders for all variables, by default EXPLAINABLE_NER_DENSE_PROMPT_TEMPLATE
+
+    Returns
+    -------
+    str
+        prepared prompt
+    """
+    return template.format(entities=entities, x=x)

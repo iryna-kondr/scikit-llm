@@ -118,3 +118,90 @@ Otherwise, translate the original text, delimited by triple backticks, to {outpu
 Original text: ```{x}```
 Output:
 """
+
+NER_SYSTEM_MESSAGE_TEMPLATE = """You are an expert in Natural Language Processing. Your task is to identify common Named Entities (NER) in a text provided by the user. 
+Mark the entities with tags according to the following guidelines:
+    - Use XML format to tag entities; 
+    - All entities must be enclosed in <entity>...</entity> tags; All other text must be enclosed in <not_entity>...</not_entity> tags; No content should be outside of these tags;
+    - The tagging operation must be invertible, i.e. the original text must be recoverable from the tagged textl; This is crucial and easy to overlook, double-check this requirement;
+    - Adjacent entities should be separated into different tags;
+    - The list of entities is strictly restricted to the following: {entities}.
+"""
+
+NER_SYSTEM_MESSAGE_SPARSE = """You are an expert in Natural Language Processing."""
+
+EXPLAINABLE_NER_DENSE_PROMPT_TEMPLATE = """You are provided with a text. Your task is to identify and tag all named entities within the text using the following entity types only:
+{entities}
+
+For each entity, provide a brief explanation for your choice within an XML comment. Use the following XML tag format for each entity:
+
+<entity><reasoning>Your reasoning here</reasoning><tag>ENTITY_NAME_UPPERCASE</tag><value>Entity text</value></entity>
+
+The remaining text must be enclosed in a <not_entity>TEXT</not_entity> tag.
+
+Focus on the context and meaning of each entity rather than just the exact words. The tags should encompass the entire entity based on its definition and usage in the sentence. It is crucial to base your decision on the description of the entity, not just its name.
+
+Format example:
+
+Input:
+```This text contains some entity and another entity.```
+
+Output:
+```xml
+<not_entity>This text contains </not_entity><entity><reasoning>some justification</reasoning><tag>ENTITY1</tag><value>some entity</value></entity><not_entity> and another </not_entity><entity><reasoning>another justification</reasoning><tag>ENTITY2</tag><value>entity</value></entity><not_entity>.</not_entity>
+```
+
+Input:
+```
+{x}
+```
+
+Output (origina text with tags):
+"""
+
+
+EXPLAINABLE_NER_SPARSE_PROMPT_TEMPLATE = """You are provided with a text. Your task is to identify and tag all named entities within the text using the following entity types only:
+{entities}
+
+You must provide the following information for each entity:
+- The reasoning of why you tagged the entity as such; Based on the reasoning, a non-expert should be able to evaluate your decision;
+- The tag of the entity (uppercase);
+- The value of the entity (as it appears in the text).
+
+Your response should be json formatted using the following schema:
+
+{{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": [
+    {{
+      "type": "object",
+      "properties": {{
+        "reasoning": {{
+          "type": "string"
+        }},
+        "tag": {{
+          "type": "string"
+        }},
+        "value": {{
+          "type": "string"
+        }}
+      }},
+      "required": [
+        "reasoning",
+        "tag",
+        "value"
+      ]
+    }}
+  ]
+}}
+
+
+Input:
+```
+{x}
+```
+
+Output json:
+"""
+
