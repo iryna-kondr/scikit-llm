@@ -23,6 +23,8 @@ from skllm.prompts.templates import (
     FEW_SHOT_MLCLF_PROMPT_TEMPLATE,
     ZERO_SHOT_CLF_SHORT_PROMPT_TEMPLATE,
     ZERO_SHOT_MLCLF_SHORT_PROMPT_TEMPLATE,
+    COT_CLF_PROMPT_TEMPLATE,
+    COT_MLCLF_PROMPT_TEMPLATE,
 )
 from skllm.prompts.builders import (
     build_zero_shot_prompt_slc,
@@ -33,7 +35,8 @@ from skllm.prompts.builders import (
 from skllm.memory.base import IndexConstructor
 from skllm.memory._sklearn_nn import SklearnMemoryIndex
 from skllm.models._base.vectorizer import BaseVectorizer as _BaseVectorizer
-import ast
+from skllm.utils import re_naive_json_extractor
+import json
 
 _TRAINING_SAMPLE_PROMPT_TEMPLATE = """
 Sample input:
@@ -221,7 +224,7 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
         ----------
         X : Union[np.ndarray, pd.Series, List[str]]
             The input data to predict the class of.
-            
+
         num_workers : int
             number of workers to use for multithreaded prediction, default 1
 
@@ -231,12 +234,16 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
             The predicted classes as a numpy array.
         """
         X = _to_numpy(X)
-        
+
         if num_workers > 1:
-            warnings.warn("Passing num_workers to predict is temporary and will be removed in the future.")
+            warnings.warn(
+                "Passing num_workers to predict is temporary and will be removed in the future."
+            )
         with ThreadPoolExecutor(max_workers=num_workers) as executor:
-            predictions = list(tqdm(executor.map(self._predict_single, X), total=len(X)))
-            
+            predictions = list(
+                tqdm(executor.map(self._predict_single, X), total=len(X))
+            )
+
         return np.array(predictions)
 
     def _get_unique_targets(self, y: Any):
@@ -284,6 +291,47 @@ class BaseZeroShotClassifier(BaseClassifier):
                 template=self._get_prompt_template(),
             )
         return {"messages": prompt, "system_message": self.system_msg}
+
+
+class BaseCoTClassifier(BaseClassifier):
+    def _get_prompt_template(self) -> str:
+        """Returns the prompt template to use for a single input."""
+        if self.prompt_template is not None:
+            return self.prompt_template
+        elif isinstance(self, SingleLabelMixin):
+            return COT_CLF_PROMPT_TEMPLATE
+        return COT_MLCLF_PROMPT_TEMPLATE
+
+    def _get_prompt(self, x: str) -> dict:
+        """Returns the prompt to use for a single input."""
+        if isinstance(self, SingleLabelMixin):
+            prompt = build_zero_shot_prompt_slc(
+                x, repr(self.classes_), template=self._get_prompt_template()
+            )
+        else:
+            prompt = build_zero_shot_prompt_mlc(
+                x,
+                repr(self.classes_),
+                self.max_labels,
+                template=self._get_prompt_template(),
+            )
+        return {"messages": prompt, "system_message": self.system_msg}
+
+    def _predict_single(self, x: Any) -> Any:
+        prompt_dict = self._get_prompt(x)
+        # this will be inherited from the LLM
+        completion = self._get_chat_completion(model=self.model, **prompt_dict)
+        completion = self._convert_completion_to_str(completion)
+        try:
+            as_dict = json.loads(re_naive_json_extractor(completion))
+            label = as_dict["label"]
+            explanation = str(as_dict["explanation"])
+        except Exception as e:
+            label = "None"
+            explanation = "Explanation is not available."
+        # this will be inherited from the sl/ml mixin
+        prediction = self.validate_prediction(label)
+        return [prediction, explanation]
 
 
 class BaseFewShotClassifier(BaseClassifier):
