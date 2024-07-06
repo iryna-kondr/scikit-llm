@@ -15,6 +15,24 @@ Text sample: ```{x}```
 Your JSON response:
 """
 
+COT_CLF_PROMPT_TEMPLATE = """
+You are tasked with classifying a given text sample based on a list of potential categories. Please adhere to the following guidelines:
+
+1. The text intended for classification is presented between triple backticks.
+2. The possible categories are enumerated in square brackets, with each category enclosed in single quotes and separated by commas.
+
+Tasks:
+1. Examine the text and provide detailed justifications for the possibility of the text belonging or not belonging to each category listed.
+2. Determine and select the most appropriate category for the text based on your comprehensive justifications.
+3. Format your decision into a JSON object containing two keys: `explanation` and `label`. The `explanation` should concisely capture the rationale for each category before concluding with the chosen category.
+
+Category List: {labels}
+
+Text Sample: ```{x}```
+
+Provide your JSON response below, ensuring that justifications for all categories are clearly detailed:
+"""
+
 ZERO_SHOT_CLF_SHORT_PROMPT_TEMPLATE = """
 Classify the following text into one of the following classes: {labels}. Provide your response in a JSON format containing a single key `label`.
 Text: ```{x}```
@@ -82,6 +100,24 @@ List of categories: {labels}
 Text sample: ```{x}```
 
 Your JSON response:
+"""
+
+COT_MLCLF_PROMPT_TEMPLATE = """
+You are tasked with classifying a given text sample based on a list of potential categories. Please adhere to the following guidelines:
+
+1. The text intended for classification is presented between triple backticks.
+2. The possible categories are enumerated in square brackets, with each category enclosed in quotes and separated by commas.
+
+Tasks:
+1. Examine the text and provide detailed justifications for the possibility of the text belonging or not belonging to each category listed.
+2. Determine and select at most {max_cats} most appropriate categories for the text based on your comprehensive justifications.
+3. Format your decision into a JSON object containing two keys: `explanation` and `label`. The `explanation` should concisely capture the rationale for each category before concluding with the chosen category. The `label` should contain an array of the chosen categories.
+
+Category List: {labels}
+
+Text Sample: ```{x}```
+
+Provide your JSON response below, ensuring that justifications for all categories are clearly detailed:
 """
 
 SUMMARY_PROMPT_TEMPLATE = """
@@ -204,4 +240,3 @@ Input:
 
 Output json:
 """
-
