@@ -475,6 +475,18 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
             return self.prompt_template
         return FEW_SHOT_CLF_PROMPT_TEMPLATE
 
+    def _reorder_examples(self, examples):
+        n_classes = len(self.classes_)
+        n_examples = self.n_examples
+
+        shuffled_list = []
+
+        for i in range(n_examples):
+            for cls in range(n_classes):
+                shuffled_list.append(cls * n_examples + i)
+
+        return [examples[i] for i in shuffled_list]
+
     def _get_prompt(self, x: str) -> dict:
         """
         Generates the prompt for the given input.
@@ -503,7 +515,7 @@ class BaseDynamicFewShotClassifier(BaseClassifier):
                 ]
             )
 
-        training_data_str = "\n".join(training_data)
+        training_data_str = "\n".join(self._reorder_examples(training_data))
 
         msg = build_few_shot_prompt_slc(
             x=x,
