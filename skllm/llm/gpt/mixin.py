@@ -66,10 +66,9 @@ class GPTMixin:
         """
         Set the OpenAI key and organization.
         """
-            
+
         self.key = key
         self.org = org
-        
 
     def _get_openai_key(self) -> str:
         """
@@ -214,7 +213,12 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
 
 # for now this works only with OpenAI
 class GPTTunableMixin(BaseTunableMixin):
-    _supported_tunable_models = ["gpt-3.5-turbo-0125", "gpt-3.5-turbo"]
+    _supported_tunable_models = [
+        "gpt-3.5-turbo-0125",
+        "gpt-3.5-turbo",
+        "gpt-4o-mini-2024-07-18",
+        "gpt-4o-mini",
+    ]
 
     def _build_label(self, label: str):
         return json.dumps({"label": label})
