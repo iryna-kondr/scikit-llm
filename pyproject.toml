@@ -27,7 +27,7 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-gpt4all = ["gpt4all>=2.0.0,<3.0.0"]
+gguf = ["llama-cpp-python>=0.2.82,<0.3.0"]
 annoy = ["annoy>=1.17.2,<2.0.0"]
 
 [tool.ruff]

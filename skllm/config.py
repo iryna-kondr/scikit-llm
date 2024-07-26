@@ -170,3 +170,9 @@ class SKLLMConfig:
     def reset_gpt_url():
         """Resets the GPT URL."""
         os.environ.pop(_GPT_URL_VAR, None)
+
+    @staticmethod
+    def get_gguf_download_path() -> str:
+        """Gets the path to store the downloaded GGUF files."""
+        default_path = os.path.join(os.path.expanduser("~"), ".skllm", "gguf")
+        return os.environ.get("SKLLM_CONFIG_GGUF_DOWNLOAD_PATH", default_path)

@@ -239,10 +239,14 @@ class BaseClassifier(ABC, _SklBaseEstimator, _SklClassifierMixin):
             warnings.warn(
                 "Passing num_workers to predict is temporary and will be removed in the future."
             )
-        with ThreadPoolExecutor(max_workers=num_workers) as executor:
-            predictions = list(
-                tqdm(executor.map(self._predict_single, X), total=len(X))
-            )
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                predictions = list(
+                    tqdm(executor.map(self._predict_single, X), total=len(X))
+                )
+        else:
+            predictions = []
+            for x in tqdm(X):
+                predictions.append(self._predict_single(x))
 
         return np.array(predictions)
 
