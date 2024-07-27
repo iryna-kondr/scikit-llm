@@ -7,6 +7,9 @@ _AZURE_API_BASE_VAR = "SKLLM_CONFIG_AZURE_API_BASE"
 _AZURE_API_VERSION_VAR = "SKLLM_CONFIG_AZURE_API_VERSION"
 _GOOGLE_PROJECT = "GOOGLE_CLOUD_PROJECT"
 _GPT_URL_VAR = "SKLLM_CONFIG_GPT_URL"
+_GGUF_DOWNLOAD_PATH = "SKLLM_CONFIG_GGUF_DOWNLOAD_PATH"
+_GGUF_MAX_GPU_LAYERS = "SKLLM_CONFIG_GGUF_MAX_GPU_LAYERS"
+_GGUF_VERBOSE = "SKLLM_CONFIG_GGUF_VERBOSE"
 
 
 class SKLLMConfig:
@@ -175,4 +178,28 @@ class SKLLMConfig:
     def get_gguf_download_path() -> str:
         """Gets the path to store the downloaded GGUF files."""
         default_path = os.path.join(os.path.expanduser("~"), ".skllm", "gguf")
-        return os.environ.get("SKLLM_CONFIG_GGUF_DOWNLOAD_PATH", default_path)
+        return os.environ.get(_GGUF_DOWNLOAD_PATH, default_path)
+
+    @staticmethod
+    def get_gguf_max_gpu_layers() -> int:
+        """Gets the maximum number of layers to use for the GGUF model."""
+        return int(os.environ.get(_GGUF_MAX_GPU_LAYERS, 0))
+
+    @staticmethod
+    def set_gguf_max_gpu_layers(n_layers: int):
+        """Sets the maximum number of layers to use for the GGUF model."""
+        if not isinstance(n_layers, int):
+            raise ValueError("n_layers must be an integer")
+        os.environ[_GGUF_MAX_GPU_LAYERS] = str(n_layers)
+
+    @staticmethod
+    def set_gguf_verbose(verbose: bool):
+        """Sets the verbosity of the GGUF model."""
+        if not isinstance(verbose, bool):
+            raise ValueError("verbose must be a boolean")
+        os.environ[_GGUF_VERBOSE] = str(verbose)
+
+    @staticmethod
+    def get_gguf_verbose() -> bool:
+        """Gets the verbosity of the GGUF model."""
+        return os.environ.get(_GGUF_VERBOSE, "False").lower() == "true"

@@ -123,7 +123,14 @@ class LlamaHandler:
         model_path = self.maybe_download_model(
             extended_model_name, download_url, sha256
         )
-        self.model = _Llama(model_path=model_path, n_ctx=n_ctx, verbose=False)
+        max_gpu_layers = SKLLMConfig.get_gguf_max_gpu_layers()
+        verbose = SKLLMConfig.get_gguf_verbose()
+        self.model = _Llama(
+            model_path=model_path,
+            n_ctx=n_ctx,
+            verbose=verbose,
+            n_gpu_layers=max_gpu_layers,
+        )
 
     def get_chat_completion(self, messages: dict, **kwargs):
         if not self.supports_system_message:
