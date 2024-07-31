@@ -190,6 +190,8 @@ class SKLLMConfig:
         """Sets the maximum number of layers to use for the GGUF model."""
         if not isinstance(n_layers, int):
             raise ValueError("n_layers must be an integer")
+        if n_layers < -1:
+            n_layers = -1
         os.environ[_GGUF_MAX_GPU_LAYERS] = str(n_layers)
 
     @staticmethod
