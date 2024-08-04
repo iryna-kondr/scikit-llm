@@ -23,25 +23,31 @@ supported_models = {
         "download_url": "https://huggingface.co/QuantFactory/Meta-Llama-3-8B-Instruct-GGUF/resolve/main/Meta-Llama-3-8B-Instruct.Q4_K_M.gguf",
         "sha256": "c57380038ea85d8bec586ec2af9c91abc2f2b332d41d6cf180581d7bdffb93c1",
         "n_ctx": 8192,
-        "supportes_system_message": True,
+        "supports_system_message": True,
     },
     "gemma2-9b-q4": {
         "download_url": "https://huggingface.co/bartowski/gemma-2-9b-it-GGUF/resolve/main/gemma-2-9b-it-Q4_K_M.gguf",
         "sha256": "13b2a7b4115bbd0900162edcebe476da1ba1fc24e718e8b40d32f6e300f56dfe",
         "n_ctx": 8192,
-        "supportes_system_message": False,
+        "supports_system_message": False,
     },
     "phi3-mini-q4": {
         "download_url": "https://huggingface.co/microsoft/Phi-3-mini-4k-instruct-gguf/resolve/main/Phi-3-mini-4k-instruct-q4.gguf",
         "sha256": "8a83c7fb9049a9b2e92266fa7ad04933bb53aa1e85136b7b30f1b8000ff2edef",
         "n_ctx": 4096,
-        "supportes_system_message": True,
+        "supports_system_message": False,
     },
     "mistral0.3-7b-q4": {
         "download_url": "https://huggingface.co/lmstudio-community/Mistral-7B-Instruct-v0.3-GGUF/resolve/main/Mistral-7B-Instruct-v0.3-Q4_K_M.gguf",
         "sha256": "1270d22c0fbb3d092fb725d4d96c457b7b687a5f5a715abe1e818da303e562b6",
         "n_ctx": 32768,
-        "supportes_system_message": True,
+        "supports_system_message": False,
+    },
+    "gemma2-2b-q6": {
+        "download_url": "https://huggingface.co/bartowski/gemma-2-2b-it-GGUF/resolve/main/gemma-2-2b-it-Q6_K_L.gguf",
+        "sha256": "b2ef9f67b38c6e246e593cdb9739e34043d84549755a1057d402563a78ff2254",
+        "n_ctx": 8192,
+        "supports_system_message": False,
     },
 }
 
@@ -113,7 +119,7 @@ class LlamaHandler:
         sha256 = supported_models[model]["sha256"]
         n_ctx = supported_models[model]["n_ctx"]
         self.supports_system_message = supported_models[model][
-            "supportes_system_message"
+            "supports_system_message"
         ]
         if not self.supports_system_message:
             warn(
