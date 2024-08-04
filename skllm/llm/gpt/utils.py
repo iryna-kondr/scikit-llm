@@ -1,6 +1,6 @@
 from typing import Tuple
 
-SUPPORTED_APIS = ["openai", "azure", "gpt4all", "custom_url"]
+SUPPORTED_APIS = ["openai", "azure", "gguf", "custom_url"]
 
 
 def split_to_api_and_model(model: str) -> Tuple[str, str]:

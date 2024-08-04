@@ -81,6 +81,12 @@ class GPTMixin:
         key = self.key
         if key is None:
             key = _Config.get_openai_key()
+        if (
+            hasattr(self, "model")
+            and isinstance(self.model, str)
+            and self.model.startswith("gguf::")
+        ):
+            key = "gguf"
         if key is None:
             raise RuntimeError("OpenAI key was not found")
         return key
