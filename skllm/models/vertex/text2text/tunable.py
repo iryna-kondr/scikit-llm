@@ -12,7 +12,7 @@ class TunableVertexText2Text(
 ):
     def __init__(
         self,
-        base_model: str = "text-bison@002",
+        base_model: str = "gemini-1.5-flash",
         n_update_steps: int = 1,
     ):
         """
@@ -21,7 +21,7 @@ class TunableVertexText2Text(
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "text-bison@002"
+            base model to use, by default "gemini-1.5-flash"
         n_update_steps : int, optional
             number of epochs, by default 1
         """

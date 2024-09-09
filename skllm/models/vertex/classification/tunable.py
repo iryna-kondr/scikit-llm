@@ -19,7 +19,7 @@ class _TunableClassifier(
 class VertexClassifier(_TunableClassifier, _SingleLabelMixin):
     def __init__(
         self,
-        base_model: str = "text-bison@002",
+        base_model: str = "gemini-1.5-flash",
         n_update_steps: int = 1,
         default_label: str = "Random",
     ):
@@ -29,7 +29,7 @@ class VertexClassifier(_TunableClassifier, _SingleLabelMixin):
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "text-bison@002"
+            base model to use, by default "gemini-1.5-flash"
         n_update_steps : int, optional
             number of epochs, by default 1
         default_label : str, optional
