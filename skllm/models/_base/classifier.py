@@ -137,8 +137,11 @@ class MultiLabelMixin:
         """
         labels = []
         for l in y:
-            for j in l:
-                labels.append(j)
+            if isinstance(l, list):
+                for j in l:
+                    labels.append(j)
+            else:
+                labels.append(l)
         return labels
 
 
