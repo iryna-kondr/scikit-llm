@@ -70,7 +70,7 @@ class VertexEmbeddingMixin(BaseEmbeddingMixin):
 
 
 class VertexTunableMixin(BaseTunableMixin):
-    _supported_tunable_models = ["text-bison@002"]
+    _supported_tunable_models = ["gemini-1.5-flash"]
 
     def _set_hyperparameters(self, base_model: str, n_update_steps: int, **kwargs):
         self.verify_model_is_supported(base_model)

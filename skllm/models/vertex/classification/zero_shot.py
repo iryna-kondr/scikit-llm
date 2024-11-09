@@ -12,7 +12,7 @@ class ZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@002",
+        model: str = "gemini-1.5-flash",
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         **kwargs,
@@ -23,7 +23,7 @@ class ZeroShotVertexClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "text-bison@002"
+            model to use, by default "gemini-1.5-flash"
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -42,7 +42,7 @@ class MultiLabelZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@002",
+        model: str = "gemini-1.5-flash",
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         max_labels: Optional[int] = 5,
@@ -54,7 +54,7 @@ class MultiLabelZeroShotVertexClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "text-bison@002"
+            model to use, by default "gemini-1.5-flash"
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
