@@ -7,6 +7,7 @@ _AZURE_API_BASE_VAR = "SKLLM_CONFIG_AZURE_API_BASE"
 _AZURE_API_VERSION_VAR = "SKLLM_CONFIG_AZURE_API_VERSION"
 _GOOGLE_PROJECT = "GOOGLE_CLOUD_PROJECT"
 _GPT_URL_VAR = "SKLLM_CONFIG_GPT_URL"
+_ANTHROPIC_KEY_VAR = "SKLLM_CONFIG_ANTHROPIC_KEY"
 _GGUF_DOWNLOAD_PATH = "SKLLM_CONFIG_GGUF_DOWNLOAD_PATH"
 _GGUF_MAX_GPU_LAYERS = "SKLLM_CONFIG_GGUF_MAX_GPU_LAYERS"
 _GGUF_VERBOSE = "SKLLM_CONFIG_GGUF_VERBOSE"
@@ -168,6 +169,28 @@ class SKLLMConfig:
             GPT URL.
         """
         return os.environ.get(_GPT_URL_VAR, None)
+    
+    @staticmethod
+    def set_anthropic_key(key: str) -> None:
+        """Sets the Anthropic key.
+
+        Parameters
+        ----------
+        key : str
+            Anthropic key.
+        """
+        os.environ[_ANTHROPIC_KEY_VAR] = key
+    
+    @staticmethod
+    def get_anthropic_key() -> Optional[str]:
+        """Gets the Anthropic key.
+
+        Returns
+        -------
+        Optional[str]
+            Anthropic key.
+        """
+        return os.environ.get(_ANTHROPIC_KEY_VAR, None)
 
     @staticmethod
     def reset_gpt_url():
