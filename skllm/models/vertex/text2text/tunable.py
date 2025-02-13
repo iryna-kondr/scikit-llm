@@ -5,6 +5,7 @@ from skllm.llm.vertex.mixin import (
 from skllm.models._base.text2text import (
     BaseTunableText2TextModel as _BaseTunableText2TextModel,
 )
+from model_constants import TEXT_BISON_MODEL
 
 
 class TunableVertexText2Text(
@@ -12,7 +13,7 @@ class TunableVertexText2Text(
 ):
     def __init__(
         self,
-        base_model: str = "text-bison@002",
+        base_model: str = TEXT_BISON_MODEL,
         n_update_steps: int = 1,
     ):
         """
@@ -21,7 +22,7 @@ class TunableVertexText2Text(
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "text-bison@002"
+            base model to use.
         n_update_steps : int, optional
             number of epochs, by default 1
         """

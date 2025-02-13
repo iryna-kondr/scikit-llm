@@ -5,6 +5,7 @@ from skllm.llm.gpt.clients.openai.credentials import (
     set_credentials,
 )
 from skllm.utils import retry
+from model_constants import OPENAI_GPT_MODEL
 
 
 @retry(max_retries=3)
@@ -12,7 +13,7 @@ def get_chat_completion(
     messages: dict,
     key: str,
     org: str,
-    model: str = "gpt-3.5-turbo",
+    model: str = OPENAI_GPT_MODEL,
     api="openai",
     json_response=False,
 ):
@@ -27,7 +28,7 @@ def get_chat_completion(
     org : str
         The OPEN AI organization ID to use.
     model : str, optional
-        The OPEN AI model to use. Defaults to "gpt-3.5-turbo".
+        The OPEN AI model to use.
     max_retries : int, optional
         The maximum number of retries to use. Defaults to 3.
     api : str

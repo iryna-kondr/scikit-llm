@@ -2,6 +2,7 @@ from skllm.llm.gpt.clients.openai.credentials import set_credentials, set_azure_
 from skllm.utils import retry
 import openai
 from openai import OpenAI
+from model_constants import OPENAI_EMBEDDING_MODEL
 
 
 @retry(max_retries=3)
@@ -9,7 +10,7 @@ def get_embedding(
     text: str,
     key: str,
     org: str,
-    model: str = "text-embedding-ada-002",
+    model: str = OPENAI_EMBEDDING_MODEL,
     api: str = "openai"
 ):
     """
@@ -24,7 +25,7 @@ def get_embedding(
     org : str
         The OPEN AI organization ID to use.
     model : str, optional
-        The model to use. Defaults to "text-embedding-ada-002".
+        The model to use.
     max_retries : int, optional
         The maximum number of retries to use. Defaults to 3.
     api: str, optional

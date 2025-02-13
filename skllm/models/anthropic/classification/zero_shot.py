@@ -6,6 +6,7 @@ from skllm.models._base.classifier import (
 )
 from skllm.llm.anthropic.mixin import ClaudeClassifierMixin as _ClaudeClassifierMixin
 from typing import Optional
+from model_constants import ANTHROPIC_CLAUDE_MODEL
 
 
 class ZeroShotClaudeClassifier(
@@ -15,7 +16,7 @@ class ZeroShotClaudeClassifier(
     
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -27,7 +28,7 @@ class ZeroShotClaudeClassifier(
         Parameters
         ----------
         model : str, optional
-            Model to use, by default "claude-3-haiku-20240307".
+            Model to use
         default_label : str, optional
             Default label for failed predictions; if "Random", selects randomly based on class frequencies, defaults to "Random".
         prompt_template : Optional[str], optional
@@ -51,7 +52,7 @@ class CoTClaudeClassifier(
     
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -63,7 +64,7 @@ class CoTClaudeClassifier(
         Parameters
         ----------
         model : str, optional
-            Model to use, by default "claude-3-haiku-20240307".
+            Model to use.
         default_label : str, optional
             Default label for failed predictions; if "Random", selects randomly based on class frequencies, defaults to "Random".
         prompt_template : Optional[str], optional
@@ -87,7 +88,7 @@ class MultiLabelZeroShotClaudeClassifier(
     
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         max_labels: Optional[int] = 5,
         prompt_template: Optional[str] = None,
@@ -100,7 +101,7 @@ class MultiLabelZeroShotClaudeClassifier(
         Parameters
         ----------
         model : str, optional
-            Model to use, by default "claude-3-haiku-20240307".
+            Model to use.
         default_label : str, optional
             Default label for failed predictions; if "Random", selects randomly based on class frequencies, defaults to "Random".
         max_labels : Optional[int], optional

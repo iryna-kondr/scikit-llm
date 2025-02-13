@@ -8,6 +8,7 @@ from skllm.models._base.classifier import (
     MultiLabelMixin as _MultiLabelMixin,
 )
 from typing import Optional
+from model_constants import OPENAI_GPT_TUNABLE_MODEL
 
 
 class _TunableClassifier(_BaseTunableClassifier, _GPTClassifierMixin, _GPTTunableMixin):
@@ -17,7 +18,7 @@ class _TunableClassifier(_BaseTunableClassifier, _GPTClassifierMixin, _GPTTunabl
 class GPTClassifier(_TunableClassifier, _SingleLabelMixin):
     def __init__(
         self,
-        base_model: str = "gpt-3.5-turbo-0613",
+        base_model: str = OPENAI_GPT_TUNABLE_MODEL,
         default_label: str = "Random",
         key: Optional[str] = None,
         org: Optional[str] = None,
@@ -31,7 +32,7 @@ class GPTClassifier(_TunableClassifier, _SingleLabelMixin):
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "gpt-3.5-turbo-0613"
+            base model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         key : Optional[str], optional
@@ -55,7 +56,7 @@ class GPTClassifier(_TunableClassifier, _SingleLabelMixin):
 class MultiLabelGPTClassifier(_TunableClassifier, _MultiLabelMixin):
     def __init__(
         self,
-        base_model: str = "gpt-3.5-turbo-0613",
+        base_model: str = OPENAI_GPT_TUNABLE_MODEL,
         default_label: str = "Random",
         key: Optional[str] = None,
         org: Optional[str] = None,
@@ -70,7 +71,7 @@ class MultiLabelGPTClassifier(_TunableClassifier, _MultiLabelMixin):
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "gpt-3.5-turbo-0613"
+            base model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         key : Optional[str], optional

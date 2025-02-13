@@ -7,13 +7,14 @@ from skllm.llm.gpt.clients.llama_cpp.completion import (
 )
 from skllm.llm.gpt.utils import split_to_api_and_model
 from skllm.config import SKLLMConfig as _Config
+from model_constants import OPENAI_GPT_MODEL
 
 
 def get_chat_completion(
     messages: dict,
     openai_key: str = None,
     openai_org: str = None,
-    model: str = "gpt-3.5-turbo",
+    model: str = OPENAI_GPT_MODEL,
     json_response: bool = False,
 ):
     """Gets a chat completion from the OpenAI compatible API."""
