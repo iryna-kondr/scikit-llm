@@ -8,6 +8,7 @@ from skllm.llm.vertex.mixin import (
     VertexTunableMixin as _VertexTunableMixin,
 )
 from typing import Optional
+from model_constants import TEXT_BISON_MODEL
 
 
 class _TunableClassifier(
@@ -19,7 +20,7 @@ class _TunableClassifier(
 class VertexClassifier(_TunableClassifier, _SingleLabelMixin):
     def __init__(
         self,
-        base_model: str = "text-bison@002",
+        base_model: str = TEXT_BISON_MODEL,
         n_update_steps: int = 1,
         default_label: str = "Random",
     ):
@@ -29,7 +30,7 @@ class VertexClassifier(_TunableClassifier, _SingleLabelMixin):
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "text-bison@002"
+            base model to use.
         n_update_steps : int, optional
             number of epochs, by default 1
         default_label : str, optional

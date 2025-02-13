@@ -21,6 +21,7 @@ from skllm.utils import extract_json_key
 import numpy as np
 from tqdm import tqdm
 import json
+from model_constants import OPENAI_GPT_TUNABLE_MODEL
 
 
 def construct_message(role: str, content: str) -> dict:
@@ -219,24 +220,16 @@ class GPTEmbeddingMixin(GPTMixin, BaseEmbeddingMixin):
 
 # for now this works only with OpenAI
 class GPTTunableMixin(BaseTunableMixin):
-    _supported_tunable_models = [
-        "gpt-3.5-turbo-0125",
-        "gpt-3.5-turbo",
-        "gpt-4o-mini-2024-07-18",
-        "gpt-4o-mini",
-    ]
-
     def _build_label(self, label: str):
         return json.dumps({"label": label})
 
     def _set_hyperparameters(self, base_model: str, n_epochs: int, custom_suffix: str):
-        self.base_model = base_model
+        self.base_model = OPENAI_GPT_TUNABLE_MODEL
         self.n_epochs = n_epochs
         self.custom_suffix = custom_suffix
         if base_model not in self._supported_tunable_models:
             raise ValueError(
                 f"Model {base_model} is not supported. Supported models are"
-                f" {self._supported_tunable_models}"
             )
 
     def _tune(self, X, y):

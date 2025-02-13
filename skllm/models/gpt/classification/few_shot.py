@@ -9,12 +9,13 @@ from skllm.models.gpt.vectorization import GPTVectorizer
 from skllm.models._base.vectorizer import BaseVectorizer
 from skllm.memory.base import IndexConstructor
 from typing import Optional
+from model_constants import OPENAI_GPT_MODEL, OPENAI_EMBEDDING_MODEL
 
 
 class FewShotGPTClassifier(BaseFewShotClassifier, GPTClassifierMixin, SingleLabelMixin):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -27,7 +28,7 @@ class FewShotGPTClassifier(BaseFewShotClassifier, GPTClassifierMixin, SingleLabe
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -51,7 +52,7 @@ class MultiLabelFewShotGPTClassifier(
 ):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         max_labels: Optional[int] = 5,
         prompt_template: Optional[str] = None,
@@ -65,7 +66,7 @@ class MultiLabelFewShotGPTClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         max_labels : Optional[int], optional
@@ -92,7 +93,7 @@ class DynamicFewShotGPTClassifier(
 ):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -110,7 +111,7 @@ class DynamicFewShotGPTClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -129,7 +130,7 @@ class DynamicFewShotGPTClassifier(
             metric used for similarity search, by default "euclidean"
         """
         if vectorizer is None:
-            vectorizer = GPTVectorizer(model="text-embedding-ada-002", key=key, org=org)
+            vectorizer = GPTVectorizer(model=OPENAI_EMBEDDING_MODEL, key=key, org=org)
         super().__init__(
             model=model,
             default_label=default_label,

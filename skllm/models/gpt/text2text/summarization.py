@@ -1,12 +1,13 @@
 from skllm.models._base.text2text import BaseSummarizer as _BaseSummarizer
 from skllm.llm.gpt.mixin import GPTTextCompletionMixin as _GPTTextCompletionMixin
 from typing import Optional
+from model_constants import OPENAI_GPT_MODEL
 
 
 class GPTSummarizer(_BaseSummarizer, _GPTTextCompletionMixin):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         key: Optional[str] = None,
         org: Optional[str] = None,
         max_words: int = 15,
@@ -18,7 +19,7 @@ class GPTSummarizer(_BaseSummarizer, _GPTTextCompletionMixin):
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         key : Optional[str], optional
             estimator-specific API key; if None, retrieved from the global config, by default None
         org : Optional[str], optional

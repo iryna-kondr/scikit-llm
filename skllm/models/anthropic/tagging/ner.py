@@ -1,6 +1,7 @@
 from skllm.models._base.tagger import ExplainableNER as _ExplainableNER
 from skllm.llm.anthropic.mixin import ClaudeTextCompletionMixin as _ClaudeTextCompletionMixin
 from typing import Optional, Dict
+from model_constants import ANTHROPIC_CLAUDE_MODEL
 
 
 class AnthropicExplainableNER(_ExplainableNER, _ClaudeTextCompletionMixin):
@@ -11,7 +12,7 @@ class AnthropicExplainableNER(_ExplainableNER, _ClaudeTextCompletionMixin):
         entities: Dict[str, str],
         display_predictions: bool = False,
         sparse_output: bool = True,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         key: Optional[str] = None,
         num_workers: int = 1,
     ) -> None:
@@ -27,7 +28,7 @@ class AnthropicExplainableNER(_ExplainableNER, _ClaudeTextCompletionMixin):
         sparse_output : bool, optional
             whether to generate a sparse representation of the predictions, by default True
         model : str, optional
-            model to use, by default "claude-3-haiku-20240307"
+            model to use
         key : Optional[str], optional
             estimator-specific API key; if None, retrieved from the global config
         num_workers : int, optional

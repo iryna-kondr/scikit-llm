@@ -5,6 +5,7 @@ from skllm.models._base.classifier import (
     MultiLabelMixin as _MultiLabelMixin,
 )
 from typing import Optional
+from model_constants import TEXT_BISON_MODEL
 
 
 class ZeroShotVertexClassifier(
@@ -12,7 +13,7 @@ class ZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@002",
+        model: str = TEXT_BISON_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         **kwargs,
@@ -23,7 +24,7 @@ class ZeroShotVertexClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "text-bison@002"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -42,7 +43,7 @@ class MultiLabelZeroShotVertexClassifier(
 ):
     def __init__(
         self,
-        model: str = "text-bison@002",
+        model: str = TEXT_BISON_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         max_labels: Optional[int] = 5,
@@ -54,7 +55,7 @@ class MultiLabelZeroShotVertexClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "text-bison@002"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional

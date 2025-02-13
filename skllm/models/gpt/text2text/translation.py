@@ -1,6 +1,7 @@
 from skllm.models._base.text2text import BaseTranslator as _BaseTranslator
 from skllm.llm.gpt.mixin import GPTTextCompletionMixin as _GPTTextCompletionMixin
 from typing import Optional
+from model_constants import OPENAI_GPT_MODEL
 
 
 class GPTTranslator(_BaseTranslator, _GPTTextCompletionMixin):
@@ -8,7 +9,7 @@ class GPTTranslator(_BaseTranslator, _GPTTextCompletionMixin):
 
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         key: Optional[str] = None,
         org: Optional[str] = None,
         output_language: str = "English",
@@ -19,7 +20,7 @@ class GPTTranslator(_BaseTranslator, _GPTTextCompletionMixin):
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         key : Optional[str], optional
             estimator-specific API key; if None, retrieved from the global config, by default None
         org : Optional[str], optional

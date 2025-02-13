@@ -9,6 +9,7 @@ from skllm.models.gpt.vectorization import GPTVectorizer
 from skllm.models._base.vectorizer import BaseVectorizer
 from skllm.memory.base import IndexConstructor
 from typing import Optional
+from model_constants import ANTHROPIC_CLAUDE_MODEL, OPENAI_EMBEDDING_MODEL
 
 
 class FewShotClaudeClassifier(BaseFewShotClassifier, ClaudeClassifierMixin, SingleLabelMixin):
@@ -16,7 +17,7 @@ class FewShotClaudeClassifier(BaseFewShotClassifier, ClaudeClassifierMixin, Sing
 
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -28,7 +29,7 @@ class FewShotClaudeClassifier(BaseFewShotClassifier, ClaudeClassifierMixin, Sing
         Parameters
         ----------
         model : str, optional
-            model to use, by default "claude-3-haiku-20240307"
+            model to use
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies
         prompt_template : Optional[str], optional
@@ -52,7 +53,7 @@ class MultiLabelFewShotClaudeClassifier(
     
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         max_labels: Optional[int] = 5,
         prompt_template: Optional[str] = None,
@@ -65,7 +66,7 @@ class MultiLabelFewShotClaudeClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "claude-3-haiku-20240307"
+            model to use
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies
         max_labels : Optional[int], optional
@@ -95,7 +96,7 @@ class DynamicFewShotClaudeClassifier(
 
     def __init__(
         self,
-        model: str = "claude-3-haiku-20240307",
+        model: str = ANTHROPIC_CLAUDE_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -112,7 +113,7 @@ class DynamicFewShotClaudeClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "claude-3-haiku-20240307"
+            model to use
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies
         prompt_template : Optional[str], optional
@@ -129,7 +130,7 @@ class DynamicFewShotClaudeClassifier(
             metric used for similarity search, by default "euclidean"
         """
         if vectorizer is None:
-            vectorizer = GPTVectorizer(model="text-embedding-ada-002", key=key)
+            vectorizer = GPTVectorizer(model=OPENAI_EMBEDDING_MODEL, key=key)
         super().__init__(
             model=model,
             default_label=default_label,

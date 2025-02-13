@@ -1,6 +1,7 @@
 from skllm.models._base.tagger import ExplainableNER as _ExplainableNER
 from skllm.llm.gpt.mixin import GPTTextCompletionMixin as _GPTTextCompletionMixin
 from typing import Optional, Dict
+from model_constants import OPENAI_GPT_MODEL
 
 
 class GPTExplainableNER(_ExplainableNER, _GPTTextCompletionMixin):
@@ -9,7 +10,7 @@ class GPTExplainableNER(_ExplainableNER, _GPTTextCompletionMixin):
         entities: Dict[str, str],
         display_predictions: bool = False,
         sparse_output: bool = True,
-        model: str = "gpt-4o",
+        model: str = OPENAI_GPT_MODEL,
         key: Optional[str] = None,
         org: Optional[str] = None,
         num_workers: int = 1,
@@ -26,7 +27,7 @@ class GPTExplainableNER(_ExplainableNER, _GPTTextCompletionMixin):
         sparse_output : bool, optional
             whether to generate a sparse representation of the predictions, by default True
         model : str, optional
-            model to use, by default "gpt-4o"
+            model to use.
         key : Optional[str], optional
             estimator-specific API key; if None, retrieved from the global config, by default None
         org : Optional[str], optional

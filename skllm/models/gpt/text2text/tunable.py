@@ -6,6 +6,7 @@ from skllm.models._base.text2text import (
     BaseTunableText2TextModel as _BaseTunableText2TextModel,
 )
 from typing import Optional
+from model_constants import OPENAI_GPT_TUNABLE_MODEL
 
 
 class TunableGPTText2Text(
@@ -13,7 +14,7 @@ class TunableGPTText2Text(
 ):
     def __init__(
         self,
-        base_model: str = "gpt-3.5-turbo-0613",
+        base_model: str = OPENAI_GPT_TUNABLE_MODEL,
         key: Optional[str] = None,
         org: Optional[str] = None,
         n_epochs: Optional[int] = None,
@@ -25,7 +26,7 @@ class TunableGPTText2Text(
         Parameters
         ----------
         base_model : str, optional
-            base model to use, by default "gpt-3.5-turbo-0613"
+            base model to use.
         key : Optional[str], optional
             estimator-specific API key; if None, retrieved from the global config, by default None
         org : Optional[str], optional

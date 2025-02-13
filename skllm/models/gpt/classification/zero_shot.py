@@ -6,6 +6,7 @@ from skllm.models._base.classifier import (
 )
 from skllm.llm.gpt.mixin import GPTClassifierMixin as _GPTClassifierMixin
 from typing import Optional
+from model_constants import OPENAI_GPT_MODEL
 
 
 class ZeroShotGPTClassifier(
@@ -13,7 +14,7 @@ class ZeroShotGPTClassifier(
 ):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -26,7 +27,7 @@ class ZeroShotGPTClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -48,7 +49,7 @@ class ZeroShotGPTClassifier(
 class CoTGPTClassifier(_BaseCoTClassifier, _GPTClassifierMixin, _SingleLabelMixin):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         prompt_template: Optional[str] = None,
         key: Optional[str] = None,
@@ -61,7 +62,7 @@ class CoTGPTClassifier(_BaseCoTClassifier, _GPTClassifierMixin, _SingleLabelMixi
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         prompt_template : Optional[str], optional
@@ -85,7 +86,7 @@ class MultiLabelZeroShotGPTClassifier(
 ):
     def __init__(
         self,
-        model: str = "gpt-3.5-turbo",
+        model: str = OPENAI_GPT_MODEL,
         default_label: str = "Random",
         max_labels: Optional[int] = 5,
         prompt_template: Optional[str] = None,
@@ -99,7 +100,7 @@ class MultiLabelZeroShotGPTClassifier(
         Parameters
         ----------
         model : str, optional
-            model to use, by default "gpt-3.5-turbo"
+            model to use.
         default_label : str, optional
             default label for failed prediction; if "Random" -> selects randomly based on class frequencies, by default "Random"
         max_labels : Optional[int], optional

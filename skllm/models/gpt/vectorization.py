@@ -1,12 +1,13 @@
 from skllm.models._base.vectorizer import BaseVectorizer as _BaseVectorizer
 from skllm.llm.gpt.mixin import GPTEmbeddingMixin as _GPTEmbeddingMixin
 from typing import Optional
+from model_constants import OPENAI_EMBEDDING_MODEL
 
 
 class GPTVectorizer(_BaseVectorizer, _GPTEmbeddingMixin):
     def __init__(
         self,
-        model: str = "text-embedding-3-small",
+        model: str = OPENAI_EMBEDDING_MODEL,
         batch_size: int = 1,
         key: Optional[str] = None,
         org: Optional[str] = None,
@@ -17,7 +18,7 @@ class GPTVectorizer(_BaseVectorizer, _GPTEmbeddingMixin):
         Parameters
         ----------
         model : str, optional
-            model to use, by default "text-embedding-ada-002"
+            model to use.
         batch_size : int, optional
             number of samples per request, by default 1
         key : Optional[str], optional

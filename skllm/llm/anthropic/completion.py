@@ -1,12 +1,13 @@
 from typing import Dict, List, Optional
 from skllm.llm.anthropic.credentials import set_credentials
 from skllm.utils import retry
+from model_constants import ANTHROPIC_CLAUDE_MODEL
 
 @retry(max_retries=3)
 def get_chat_completion(
     messages: List[Dict],
     key: str,
-    model: str = "claude-3-haiku-20240307",
+    model: str = ANTHROPIC_CLAUDE_MODEL,
     max_tokens: int = 1000,
     temperature: float = 0.0,
     system: Optional[str] = None,
